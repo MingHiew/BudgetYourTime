@@ -1,0 +1,1 @@
+release='./gradlew clean build uploadArchives' #upload to sonatype

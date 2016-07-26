@@ -1,0 +1,7 @@
+syntax: glob
+.gradle
+build
+.DS_Store
+.idea
+*.iml
+out

@@ -1,0 +1,471 @@
+2.9.6 /2016-07-08/:
+    * EventBus fix.
+
+2.9.5 /2016-05-01/:
+    * IntentService: fixed null Intent crash /kudos to @plzen/.
+
+2.9.4 /2016-03-04/:
+    * ClearableEditText: customizable X location & misc.
+
+2.9.3 /2016-02-13/:
+    * ClearableEditText fix.
+
+2.9.2 /2016-02-12/:
+    * EventBus: fixed ReflectiveReceiver registered more than once /kudos to @plzen/.
+    * ClearableEditText: improved X tap detection.
+
+2.9.1 /2015-12-14/:
+    * CookieJar: fixed UnsupportedOperationException /kudos to @plzen/.
+    * EventBus: register/unregister in onResume()/onPause() in Fragments.
+
+2.9.0 /2015-12-04/:
+    * ModelConverter: getJSONSerializer() & getXMLSerializer() methods for customization.
+
+2.8.9 /2015-11-24/:
+    * Fixed exceptions being swallowed during injection.
+    * EventBus: don't unregister a listener on exception.
+
+2.8.8 /2015-10-30/:
+    * ImageFetcher: don't report success on null url.
+    * Serializers: report source object on serialization exception.
+
+2.8.7 /2015-10-18/:
+    * Fixed reading longs from JSON.
+
+2.8.6 /2015-09-24/:
+    * Fixed getting Interface generic arg.
+
+2.8.5 /2015-09-17/:
+    * Moved activities from legacy package.
+    * Activity -> FragmentActivity.
+    * Made onPreInject() protected & misc.
+    * EventBus enabled by default for fragments.
+    * HttpURLConnectionWorker: made methods non-static.
+    * ModelConverter: a method to create new JSONSerializer.
+    * HttpURLConnectionWorker: setMultipartChunkSize(int size).
+
+2.8.3 /2015-09-12/:
+    * ActionBarActivity -> AppCompatActivity.
+    * Fragments: made onCreateView() protected.
+    * Generic args reading fix.
+
+2.8.2 /2015-09-06/:
+    * JSONSerializer: generic Map support.
+    * Persist: private class instantiation added.
+    * Minor stuff.
+
+2.8.1 /2015-09-02/:
+    * InstanceStateSaver: Fragment tweaks.
+
+2.8.0 /2015-09-01/:
+    * @SaveInstanceState for Activities & Fragments.
+
+2.7.8 /2015-08-11/:
+    * AsyncTask: don't swallow exceptions in onPostExecute().
+
+2.7.7 /2015-08-06/:
+    * SQL: escape default value when adding columns /kudos to @Atrinax/.
+
+2.7.6 /2015-07-14/:
+    * ViewUtils: getRootView(Window w).
+    * Minor stuff.
+
+2.7.5 /2015-06-07/:
+    * DependencyReader: correctly init after tearDown() /kudos to @vovan888/.
+    * RESTClient: improved log messages.
+
+2.7.4 /2015-05-26/:
+    * RESTClient: added getHeaders().
+    * AbstractDependencyProvider: made getDBOpenHelper() non-abstract & removed getDB().
+    * AbstractDialogFactory: removed showErrorToast().
+
+2.7.3 /2015-04-24/:
+    * MultiSelectListPreference: update checked entry indexes on setEntryValues().
+    * L: added Listener support & fixed a crash when running standalone.
+
+2.7.2 /2015-04-03/:
+    * JSONSerializer: don't include null fields with 'optional = true', changed putToJSON(...) to allow overriding the mentioned behavior.
+    * Added build.gradle to DroidPartsGram.
+
+2.7.1 /2015-03-23/:
+    * Rebuilt with Java 7.
+
+2.7.0 /2015-03-19/:
+    * RESTClient: changed postMultipart() to accept InputStream.
+    * RESTClient2: added postMultipart() for File & byte[] /kudos to @Atrinax/.
+    * IoUtils: readToStream(InputStream is, OutputStream os) => copy(InputStream is, OutputStream os).
+
+2.6.8 /2015-03-17/:
+    * Serializers: improved logging.
+    * Updated Support Library to v.22.
+
+2.6.7 /2015-02-20/:
+    * SQL: correctly persist arrays & collections of objects that don't convert to string.
+
+2.6.6 /2015-02-10/:
+    * EventBus: fixed posting sticky events with null data.
+    * ClearableEditText: fixed setClearIconVisible() causing an eternal loop of onFocusChanged-events /kudos to @KennethKr/.
+
+2.6.5 /2015-01-23/:
+    * Strings: fixed calculation of SHA-1 hashes beginning with 0.
+
+2.6.4 /2015-01-14/:
+    * XMLSerializer: fixed Exception not thrown if deserialization a required array/collection element fails.
+    * XMLSerializer: reverted parseDocument(String xml) to return Document.
+
+2.6.3 /2015-01-06/:
+    * XMLSerializer: changed parseDocument(String xml) to return the root child.
+    * Updated pom.xml.
+
+2.6.2 /2014-10-26/:
+    * Removed excessive logging /kudos to @plzen/.
+
+2.6.1 /2014-10-01/:
+    * @Column: fixed 'eager=true' on a non-Entity field crash.
+
+2.6.0 /2014-09-09/:
+    * DB Model persistence.
+    * XMLSerizlizer: parseDocument method.
+
+2.5.0 /2014-08-24/:
+    * Added XMLSerialiser & @XML annotation.
+    * JSONSerializer changed package, method signatures.
+    * @Key annotation renamed to @JSON.
+    * Dropped OkHttp & ABS support.
+
+2.0.6 /2014-07-14/:
+    * HttpResponseCache: don't install by default.
+    * ImageFetcher: added an extra constructor.
+    * EntityCursorAdapter: createOrUpdate(...) /kudos to @aleksanb/.
+
+2.0.5 /2014-05-09/:
+    * Delete object: made a method public.
+    * IntentService: added RESULT_SUCCESS & RESULT_FAILURE codes.
+
+2.0.4 /2014-04-25/:
+    * EntityCursorAdapter: changed constructors.
+    * ArrayAdapter: LayoutInflater getter.
+    * ImageFetcher: reordered args in a method.
+
+2.0.3 /2014-04-09/:
+    * L: removed setMuted(), verbose by default.
+    * ClearableEditText: reverted to old icon.
+    * IOUtils: readToStream(...).
+
+2.0.2 /2014-03-14/:
+    * RESTClient: follow redirects, on by default.
+    * ArrayAdapter: optimized setContent().
+    * AsyncTask: log exceptions at debug level.
+
+2.0.1 /2014-02-12/:
+    * RESTClient: putHeader() => setHeader().
+    * RESTClient: removed multiple vals for single header key feature.
+    * RESTClient: simplified http basic auth to avoid compatibility issues.
+    * RESTClient: fixed setting user agent in HttpURLConnection.
+
+2.0.0 /2013-12-28/:
+    * Moved ABS & support-v4 classes to droidparts-support lib.
+    * Base classes for ActionBar by Android Support Library v7. (untested)
+    * RESTClient: postFile(...) => postMultipart(...).
+    * RESTClient: optional Content-Type header for multipart file upload.
+
+1.6.2 /2013-12-16/:
+    * RESTClient: added OkHttp worker.
+    * RESTClient: internal tweaks.
+    * AsyncTask: fixed incorrectly handled null result.
+
+1.6.1 /2013-12-14/:
+    * RESTClient: file upload support /kudos to @makovkastar/.
+    * RESTClient: custom HTTPWorker support.
+    * CookieJar: made thread-safe.
+
+1.6.0 /2013-12-05/:
+    * Updated ProGuard config.
+    * ImageFetcher: log when ImageView gets GCed.
+    * EventBus: made clearStickyEvents() static.
+
+1.5.9 /2013-10-14/:
+    * ImageFetcher: use internal memory for disk caching.
+    * Misc internal.
+
+1.5.8 /2013-10-11/:
+    * ImageFetcher: changed method signatures. 
+    * ImageFetcher: removed decode hint based on screen size. 
+    * Protected Context accessors.
+    * Internal stuff.
+
+1.5.7 /2013-09-24/:
+    * ClearableEditText: use sexier icon on newer Androids. 
+    * ViewUtils: runOnLayoutDone(...)
+    * Minor stuff.
+
+1.5.6 /2013-08-21/:
+    * EventBus: support extra annotated method signature.
+    * AppUtils: changed getVersionName() params.
+    * SimpleAsyncTask: Void => Integer for progress.
+
+1.5.5 /2013-08-10/:
+    * Renamed executor subpackage to concurrent.
+    * JSONSerializer: moved nested separator to @Key.
+    * BackgroundThread.
+
+1.5.4 /2013-08-08/:
+    * Moved rarely used helpers to Gist.
+
+1.5.3 /2013-08-07/:
+    * Added PreferenceFragment.
+    * Moved ListActivity & PreferenceActivity to legacy subpackage.
+
+1.5.2 /2013-08-06/:
+    * Code improvements.
+
+1.5.1 /2013-08-06/:
+    * Improved annotation processing performance.
+    * @ReceiveEvents: zero-param method support.
+    * Minor awesomeness.
+
+1.5.0 /2013-07-30/:
+    * Added EventBus.
+    * ImageFetcher: don't store strong references to ImageViews.
+    * Misc improvements.
+
+1.4.4 /2013-07-24/:
+    * Tweaks & fixes.
+
+1.4.3 /2013-07-17/:
+    * Bugfixes & minor stuff.
+
+1.4.2 /2013-06-26/:
+    * ResourceUtils: readStringResource() => readRawResource.
+    * ClearableEditText: fixed clear icon shown for preset text.
+    * Fixed 'native' injection with support lib in classpath.
+
+1.4.1 /2013-06-03/:
+    * ImageFetcher: don't retain ImageView references.
+    * IntentService: added removePendingIntents().
+    * L: added isLoggable(int level).
+
+1.4.0 /2013-05-20/:
+    * ImageFetcher: added inBitmap support.
+    * Application => AbstractApplication.
+    * SimpleIntentService => IntentService.
+    * AsyncTask & IntentService changed packages, onExecute().
+    * Fixed API 8 compatibility.
+    * Dropped AsyncTaskProgressListener.
+    * Misc renames & package changes.
+
+1.3.10 /2013-05-05/:
+    * More renames.
+
+1.3.9 /2013-05-05/:
+    * Rearranged utils.
+
+1.3.8 /2013-05-02/:
+    * DB: Where support with nested ANDs and ORs.
+    * ImageFetcher fix.
+
+1.3.7 /2013-04-30/:
+    * Reworked ImageFetcher.
+
+1.3.6 /2013-04-25/:
+    * ImageFetcher tweaks.
+    * TypeHandler => Converter.
+
+1.3.5 /2013-04-23/:
+    * Injector: made methods static.
+    * ImageFetcher fixes.
+    * inner.reader rework.
+
+1.3.4 /2013-04-15/:
+    * ImageFetcher: pause & resume support.
+    * Fixed Injector bug.
+
+1.3.3 /2013-04-12/:
+    * ImageReshaper: provide image width, height hints to prevent OutOfMemoryError exceptions.  
+    * RESTClient: don't catch NetworkOnMainThreadException.
+    * Arrays2: less code.
+
+1.3.2 /2013-04-09/:
+    * Fixed Entity[] & Collection<Entity> persistence.
+    * Improved TypeHandler API.
+    * Misc tweaks.
+
+1.3.1 /2013-04-07/:
+    * AbstractDBOpenHelper: override onCreateTables(...) & call createTables(...).
+    * AbstractDBOpenHelper: added addMissingColumns(...) for simple migration.
+    * Dropped AbstractDBOpenHelper2 & moved helper to ResourceUtils.
+
+1.3.0 /2013-04-01/:
+    * Refactored to use TypeHandlers for SQL & JSON interactions.
+    * Rearranged a bunch of stuff.
+    * Cleaned up porn.xml files.
+
+1.2.1 /2013-03-30/:
+    * DroidPartsGram: added image loading progress example.
+    * RESTClient & ImageFetcher stuff.
+
+1.2.0 /2013-03-28/:
+    * Made available from Maven Central.
+    * Extra ViewUtils helpers.
+    * Uri persistence support.
+    * Added MergeSelect.
+    * RESTClient: If-Modified-Since & ETag support.
+    * ImageFetcher tweaks.
+
+1.1.5 /2013-03-08/:
+    * Fixed porn.xml.
+    * DBOpenHelper: a method to create tables for new Entities.
+    * ClearableEditText: specify clear icon via xml & tweaks.
+
+1.1.1 /2013-02-23/:
+    * Cleaned up since merge.
+    * Extra L methods.
+
+1.1.0 /2013-02-18/:
+    * base, extra & fragments got merged into a single library. Thank ADT bug.
+    * Misc fixes & tweaks.
+
+1.0.8 /2013-02-01/:
+    * Changed EntityManager to fill eager foreign keys.
+    * BitmapUtils: a couple of new methods.
+    * Added ClearableEditText, VerticalScrollView, ImagePicker, ListViewSynchronizer.
+    * Misc fixes & API changes.
+
+1.0.7 /2013-01-17/:
+    * API changes.
+
+1.0.6 /2013-01-09/:
+    * Tweaks & fixes.
+
+1.0.5 /2013-01-05/:
+    * Changed ProGuard config to preserve all annotated fields.
+    * Numerous ImageFetcher improvements.
+    * AsyncTask, L fixes.
+    * RESTClient: addHeader() => putHeader(), null removes headers for the key.
+
+1.0 /2012-12-31/:
+    * Oh yeah! (:
+
+0.9.7 /2012-12-28/:
+    * InjectView, InjectFragment, InjectBundleExtra annotations arguments changed.
+    * EntityManager & JSONSerializer lost factory methods.
+    * FragmentActivity, TabbedFragmentActivity: methods changed to accept Fragments instead of fragment ids.
+    * Injection improvements & misc.
+
+0.9.6 /2012-12-26/:
+    * ImageAttacher => ImageFetcher & related helpers changes.
+
+0.9.5 /2012-12-25/:
+    * 'modern-sherlock' & 'modern-native' modules got merged into 'fragments' module & also received pure
+      'android-support-v4.jar' base classes.
+      To migrate, change imports for Activities & Fragments. New package name suffixes: 'sherlock' = ActionBarSherlock,
+      'stock' = Android 3.0+ native implementation, 'support' = Android Support Package.
+      Also notice the 'sherlock-support-v4-stub.jar_' file in the libs folder.
+    * RESTClient lost proxy support but now provides access to underlying HTTPWorkers for fine-tuning.
+    * RESTClient now supports setting a AuthScope for HTTP Basic Authentication.
+    * Fixed RESTClient not requesting GZIP when using HttpURLConnectionWorker.
+    * Reworked ImageAttacher. BitmapCache will now use LruCache if available.
+    * Removed 'legacy' module & Loader subclasses.
+    * DroidParts now doesn't use any xml resources. Which means it can be used as pure .jars placed in the libs folder.
+
+0.9.3 /2012-12-16/:
+    * Mavenized. Thanks to @emartynov.
+    * RESTClient tweaks & fixes.
+
+0.9.2 /2012-12-02/:
+    * Fixes.
+
+0.9.1 /2012-11-25/:
+    * Minor yet neat changes.
+
+0.9.0 /2012-11-19/:
+    * DB: fixed '_id' suffix erroneously appended to autogenerated non-pk column names. 
+
+0.8.9 /2012-11-09/:
+    * We have cookies too: cookie cache for RESTClient.
+    * Injector cleanup.
+
+0.8.8 /2012-10-27/:
+    * Changed setInvisible(), setGone() methods to support multiple Views at once.
+    * Added a workaround for a common AsyncTask bug.
+    * Removed FragmentsInjector, generic Injector can now handle it.
+    * More awesomeness with less SLOCs.
+
+0.8.7 /2012-10-21/:
+    * Changed RESTClient to return HTTPResponses with status code, headers & body.
+    * RESTClient now fully utilizes HttpURLConnection on API >= 10.
+    * Added isInjected() to Fragments.
+    * Misc fixes & backwards-incompatible changes. Muhaha.
+
+0.8.5 /2012-10-15/:
+    * Renamed droidparts-modern to droidparts-modern-sherlock; added droidparts-modern-native.
+    * Improved dependency injection speed.
+    * setReloadMenuItem => setActionBarReloadMenuItem(), setSupportProgressBarIndeterminateVisibility() => setActionBarLoadingIndicatorVisible().
+    * Other tweaks & minor API changes.
+
+0.8.0 /2012-09-26/:
+    * EntityMananger: added readFirstFromCursor(), readAllFromCursor(), removed list().
+    * Changed EntityCursorAdapter constructors, one of them now accepts Select object.
+    * Added scaleBitmap() to MiscUtils.
+    * Removed SimplerAsyncTask; SimplestAsyncTask => SimpleAsyncTask.
+    * Removed the 'Builder' part from SQL statement builders.
+    * Added SQL NOT LIKE, (NOT) BETWEEN statement support.
+    * Little this, little that.
+
+0.7.9 /2012-09-18/:
+    * AbstractDBOpenHelper: dropAll() => dropTables() with optional table names.
+    * ImageAttacher: processBitmapBeforeAttaching() => onSuccess(), added onFailure().
+    * Improved SQLException handling in EntityManager.
+    * Fixed Collections persistence.
+    * Added java.util.Date persistence.
+
+0.7.8 /2012-09-17/:
+    * Changed AbstractDependencyProvider to require DBOpenHelper instead of SQLiteDatabase.
+    * AbstractDBOpenHelper: getModelClasses() => getEntityClasses().
+    * Added getDependency() method to Injector.
+
+0.7.7 /2012-09-15/:
+    * Optimized SelectBuilder's count().
+    * Renamed UpdateBuilder method contentValues() to setContent().
+    * Extra where() method in StatementBuilder for raw queries.
+    * Fixed jumping ActionBar loading indicator.
+    * Added optional Runnable for cross fade.
+    * Fixed RESTClient crashes at unchecked exceptions.
+    * Replaced ProGuard config file with a DroidParts-specific one.
+
+0.7.6 /2012-09-12/:
+    * @Table & @Object now use 'name' attribute.
+    * Correct Foreign Keys support with 'ON DELETE CASCADE'.
+    * SelectBuilder: fixed limit(), added offset() & count().
+    * Unit tests & minor improvements.
+
+0.7.5 /2012-09-07/:
+    * DroidPartsGram - a sample fragment-based app utilizing Instagram's API.
+    * EntityCursorAdapter gets a custom bindView(...).
+    * Tweaks & fixes.
+
+0.7.1 /2012-08-25/:
+    * Package name changes. Again.
+    * Working LIKE, (NOT) IN in StatementBuilder.
+    * DatabaseUtils2 class, toArgs => toWhereArgs.
+
+0.7 /2012-08-24/:
+    * Some classes relocated & changed names.
+    * JSONObject Keys can be marked optional, false by default.
+    * Inject Preferences with @InjectView.
+    * Working select(), update(), delete() methods in EntityManager.
+    * Lots of DB & JSON fixes & improvements.
+    * Arrays2 helper.
+    * Unit tests.
+
+0.6 /2012-07-20/:
+    * 'support-actionbarsherlock' renamed to 'modern' (still relies on ActionBarSherlock).
+    * Added 'legacy' for outdated stuff.
+    * Some classes changed their packages.
+    * ORM is taught to persist arrays. 
+    * Improved ImageAttacher, now with cross fade.
+    * RESTClient uses HttpURLConnection & caching on newer Androids.
+    * Lots of minor improvements & fixes.
+
+0.5 /2012-06-03/:
+    * Initial release.

@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">BudgetYourTime</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_add_edit_budget">AddEditBudgetActivity</string>
+    <string name="title_activity_add_edit_item">AddEditItemActivity</string>
+    <string name="budget_types">Budget Types</string>
+    <string-array name="budget_arrays">
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- transaction list periods -->
+    <string name="all_transaction">All transactions</string>
+    <string name="today">Today</string>
+    <string name="last7days">Last 7 days</string>
+    <string name="last15days">Last 2 weeks</string>
+    <string name="current_month">Current month</string>
+    <string name="current_year">Current year</string>
+    <string name="future_transactions">Future transactions</string>
+
+    <!--<string name="option">Option</string>-->
+    <string name="all_time">All Time</string>
+    <string name="last_month">Previous Month</string>
+    <string name="last30days">Last 30 Days</string>
+    <string name="last_year">Previous Year</string>
+    <string name="last3months">Last 3 months</string>
+    <string name="last6months">Last 6 months</string>
+
+    <string name="unhandled_crash">Unexpected error. Please send us the log.</string>
+</resources>

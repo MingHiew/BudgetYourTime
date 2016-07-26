@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="date_format_mask">
+        <item>%d/%m/%y</item>
+        <item>%d/%m/%Y</item>
+        <item>%d-%m-%y</item>
+        <item>%d-%m-%Y</item>
+        <item>%d.%m.%y</item>
+        <item>%d.%m.%Y</item>
+        <item>%d,%m,%y</item>
+        <item>%d/%m\'%Y</item>
+        <item>%d/%m %Y</item>
+        <item>%m/%d/%y</item>
+        <item>%m/%d/%Y</item>
+        <item>%m-%d-%y</item>
+        <item>%m-%d-%Y</item>
+        <item>%m/%d\'%Y</item>
+        <item>%y/%m/%d</item>
+        <item>%y-%m-%d</item>
+        <item>%Y/%m/%d</item>
+        <item>%Y-%m-%d</item>
+        <item>%Y.%m.%d</item>
+        <item>%Y%m%d</item>
+    </string-array>
+</resources>

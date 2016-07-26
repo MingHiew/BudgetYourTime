@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.droidparts.test" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="14" />
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="org.droidparts.test" />
+
+    <application
+        android:name=".Application"
+        android:label="droidparts-test" >
+        <uses-library android:name="android.test.runner" />
+
+        <meta-data
+            android:name="droidparts_dependency_provider"
+            android:value=".DependencyProvider" />
+
+        <activity android:name=".activity.TestActivity" />
+    </application>
+
+</manifest>
