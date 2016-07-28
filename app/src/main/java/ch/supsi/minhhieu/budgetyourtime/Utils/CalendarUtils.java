@@ -5,6 +5,7 @@ import android.support.v4.util.Pools;
 import android.text.format.DateUtils;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -87,6 +88,17 @@ public class CalendarUtils {
      */
     public static String toTimeString(Context context, long timeMillis) {
         return DateUtils.formatDateTime(context, timeMillis, DateUtils.FORMAT_SHOW_TIME);
+    }
+
+    public static long getNearestHourAndMinutes(){
+        Date whateverDateYouWant = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(whateverDateYouWant);
+
+        int unroundedMinutes = calendar.get(Calendar.MINUTE);
+        int mod = unroundedMinutes % 30;
+        calendar.add(Calendar.MINUTE, mod < 16 ? -mod : (30-mod));
+        return calendar.getTimeInMillis();
     }
 
     /**

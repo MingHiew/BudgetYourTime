@@ -52,17 +52,24 @@ public class AddEditItemActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_edit_item);
         ButterKnife.bind(this);
+        presetViews();
         setupViews();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
-    private void setupViews() {
-        //Preset the date
+    private void presetViews(){
         if (activityDate == null) return;
         final long today = CalendarUtils.today();
         activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, today));
+        startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
+                CalendarUtils.getNearestHourAndMinutes()));
+        endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
+                CalendarUtils.getNearestHourAndMinutes()+3600000));;
+
+    }
+    private void setupViews() {
+        //Preset the date
         activityDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +78,6 @@ public class AddEditItemActivity extends FragmentActivity {
         });
 
         //Preset the hour and minute
-
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,11 +119,19 @@ public class AddEditItemActivity extends FragmentActivity {
 
     private void showTimePicker(final boolean start) {
         final Calendar date = start ? mItem.startTime : mItem.endTime;
-        new CustomTimePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, new TimePickerDialog.OnTimeSetListener() {
+
+        new CustomTimePickerDialog(this, AlertDialog.THEME_TRADITIONAL, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 date.set(Calendar.MINUTE, minute);
+                if (start) {
+                    startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
+                            date.getTimeInMillis()));
+                } else {
+                    endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
+                            date.getTimeInMillis()));
+                }
             }
         }, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), false).show();
     }

@@ -3,6 +3,7 @@ package ch.supsi.minhhieu.budgetyourtime;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,15 +20,15 @@ import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
 public class AddEditBudgetActivity extends Activity {
 
     @BindView(R.id.budget_name)
-    EditText mBudgetName;
+    EditText budgetName;
     @BindView(R.id.spinner_budget_type)
-    Spinner mBudgetType;
+    Spinner budgetType;
     @BindView(R.id.budget_amount)
-    EditText mBudgetAmount;
+    EditText budgetAmount;
     @BindView(R.id.budget_description)
-    EditText mBudgetDescription;
+    EditText budgetDescription;
     @BindView(R.id.add_edit_budget_title)
-    TextView mAddEditBudgetTitle;
+    TextView addEditBudgetTitle;
 
     public static final int ADD_NEW_BUDGET = 1;
     public static final int EDIT_BUDGET = 2;
@@ -47,6 +48,8 @@ public class AddEditBudgetActivity extends Activity {
         //setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         db = DBHelper.getInstance(this);
+        //ButterKnife.bind(this);
+        //budgetAmount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
     }
 
     private void initLook() {
