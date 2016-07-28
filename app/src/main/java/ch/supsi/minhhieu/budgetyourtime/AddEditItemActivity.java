@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -13,6 +15,7 @@ import android.widget.DatePicker;
 import android.content.Context;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -28,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.supsi.minhhieu.budgetyourtime.Models.Item;
 import ch.supsi.minhhieu.budgetyourtime.Utils.CalendarUtils;
+import co.geeksters.googleplaceautocomplete.lib.CustomAutoCompleteTextView;
 
 public class AddEditItemActivity extends FragmentActivity {
 
@@ -37,6 +41,8 @@ public class AddEditItemActivity extends FragmentActivity {
     TextView endTime;
     @BindView(R.id.activityDate)
     TextView activityDate;
+    @BindView(R.id.locationAutocomplete)
+    CustomAutoCompleteTextView autocompleteView;
 
     private Item mItem = new Item();
     /**
@@ -65,7 +71,9 @@ public class AddEditItemActivity extends FragmentActivity {
         startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
                 CalendarUtils.getNearestHourAndMinutes()));
         endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
-                CalendarUtils.getNearestHourAndMinutes()+3600000));;
+                CalendarUtils.getNearestHourAndMinutes()+3600000));
+        //autocompleteView.setAdapter(new PlacesAutoCompleteAdapter(AddEditItemActivity.this, R.layout.location_autocomplete));
+
 
     }
     private void setupViews() {
@@ -90,19 +98,18 @@ public class AddEditItemActivity extends FragmentActivity {
                 showTimePicker(false);
             }
         });
+        autocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String description = (String) parent.getItemAtPosition(position).toString();
+                Toast.makeText(AddEditItemActivity.this, description, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setDate() {
     }
 
-    /*private void setTime(boolean start){
-        EditText label = start ? startTime : endTime;
-        Calendar dateTime = start ? mItem.startTime : mItem.endTime;
-        int unroundedMinutes = dateTime.get(Calendar.MINUTE);
-        int mod = unroundedMinutes % 15;
-        dateTime.add(Calendar.MINUTE, mod < 8 ? -mod : (15-mod));
-        label.setText(CalendarUtils.toTimeString(AddEditItemActivity.this, dateTime.getTimeInMillis()));
-    }*/
     private void showDatePicker() {
         final Calendar date = Calendar.getInstance();
         new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, new DatePickerDialog.OnDateSetListener() {

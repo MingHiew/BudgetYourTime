@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':GooglePlaceAutoComplete'
+project(':GooglePlaceAutoComplete').projectDir = new File('libs/GooglePlaceAutoComplete')
