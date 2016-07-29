@@ -102,7 +102,7 @@ public class AddEditItemActivity extends FragmentActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String description = (String) parent.getItemAtPosition(position).toString();
-                Toast.makeText(AddEditItemActivity.this, description, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddEditItemActivity.this, description, Toast.LENGTH_SHORT).show();
             }
         });
     }
