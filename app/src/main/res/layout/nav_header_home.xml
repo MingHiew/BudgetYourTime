@@ -16,22 +16,9 @@
         android:id="@+id/profile_image"
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:src="@drawable/hiew"
+        android:src="@drawable/logo"
         android:layout_weight="1"
         app:civ_border_width="2dp"
         app:civ_border_color="#FF000000" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Minh Hieu Nguyen"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="minhhieunn@gmail.com" />
 
 </LinearLayout>

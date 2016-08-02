@@ -3,7 +3,8 @@
     <color name="app_background">#2C2C38</color>
     <color name="app_text">#EDEDEE</color>
 	<color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#303F9E</color>
+    <color name="colorPrimaryDarker">#303999</color>
     <color name="colorAccent">#FF4081</color>
     <color name="red">#F62459</color>
     <color name="green">#2baf2b</color>
@@ -15,4 +16,5 @@
     <color name="purple">#9c27b0</color>
     <color name="orange">#ff5722</color>
     <color name="pink">#FF4081</color>
+    <color name="iron">#CCCCCC</color>
 </resources>

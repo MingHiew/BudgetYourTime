@@ -130,6 +130,6 @@
             android:ems="10"
             android:paddingTop="15dp"
             android:hint="Add budget description..."
-            android:id="@+id/budget_description" />
+            android:id="@+id/item_description" />
     </LinearLayout>
 </LinearLayout>

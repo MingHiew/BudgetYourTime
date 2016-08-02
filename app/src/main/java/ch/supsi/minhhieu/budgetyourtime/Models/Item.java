@@ -13,12 +13,12 @@ public class Item {
     private String description;
     private int budget;
     private String location;
-    private Calendar date;
+    public Calendar date;
 
 
 
-    public final Calendar startTime = Calendar.getInstance();
-    public final Calendar endTime = Calendar.getInstance();
+    public Calendar startTime = Calendar.getInstance();
+    public Calendar endTime = Calendar.getInstance();
     private long duration;
 
     public Item() {
@@ -72,76 +72,15 @@ public class Item {
         return date;
     }
 
-    /*public Item(String mDescription, int mBudget, String mLocation, Calendar mStartTime, Calendar mEndTime, String mDuration) {
-        this.mDescription = mDescription;
-        this.mBudget = mBudget;
-        this.mLocation = mLocation;
-        this.mStartTime = mStartTime;
-        this.mEndTime = mEndTime;
-        this.mDuration = mDuration;
-    }*/
-
-    /*public int getId() {
-        return id;
+    public void setStartTime(Calendar startTime) {
+        this.startTime = startTime;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setEndTime(Calendar endTime) {
+        this.endTime = endTime;
     }
 
-    public String getmDescription() {
-        return mDescription;
+    public void setDate(Calendar date) {
+        this.date = date;
     }
-
-    public void setmDescription(String mDescription) {
-        this.mDescription = mDescription;
-    }
-
-    public int getmBudget() {
-        return mBudget;
-    }
-
-    public void setmBudget(int mBudget) {
-        this.mBudget = mBudget;
-    }
-
-    public String getmLocation() {
-        return mLocation;
-    }
-
-    public void setmLocation(String mLocation) {
-        this.mLocation = mLocation;
-    }
-
-    public Long getmDuration() {
-        return mDuration;
-    }
-
-    public void setmDuration(Long mDuration) {
-        this.mDuration = mDuration;
-    }
-
-    public DateTime getmDate() {
-        return mDate;
-    }
-
-    public void setmDate(DateTime mDate) {
-        this.mDate = mDate;
-    }
-
-    public void setmStartTime(DateTime mStartTime) {
-        this.mStartTime = mStartTime;
-    }
-
-    public void setmEndTime(DateTime mEndTime) {
-        this.mEndTime = mEndTime;
-    }
-
-    public DateTime getmStartTime() {
-        return mStartTime;
-    }
-
-    public DateTime getmEndTime() {
-        return mEndTime;
-    }*/
 }

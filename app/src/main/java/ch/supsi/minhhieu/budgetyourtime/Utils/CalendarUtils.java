@@ -80,6 +80,7 @@ public class CalendarUtils {
                         DateUtils.FORMAT_SHOW_YEAR);
     }
 
+
     /**
      * Formats given time to a readable time string, e.g. 8:30 AM
      * @param context       resources provider

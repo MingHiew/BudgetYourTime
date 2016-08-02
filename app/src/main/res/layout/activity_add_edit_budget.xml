@@ -9,7 +9,6 @@
     tools:context="ch.supsi.minhhieu.budgetyourtime.AddEditBudgetActivity">
 
     <LinearLayout
-        android:id="@+id/add_edit_budget_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/blue"
@@ -18,9 +17,10 @@
         <TextView
             android:id="@+id/budget_act_title"
             android:layout_width="0dp"
+            android:textStyle="bold"
             android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:layout_gravity="center_vertical"
             android:textColor="@color/white"
             android:layout_marginLeft="12dp"/>

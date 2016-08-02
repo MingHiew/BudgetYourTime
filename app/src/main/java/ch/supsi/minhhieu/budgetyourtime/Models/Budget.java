@@ -14,61 +14,42 @@ import java.util.Map;
 public class Budget {
 
     private int id;
-    private int user;
     private String name;
-    private int amount;
-    private int usedAmount;
+    private long amount;
+    private long usedAmount;
     private String description;
-
-    public enum Budget_Type {
-        WEEKLY(0),
-        MONTHLY(1);
-        private int value;
-        private static Map map = new HashMap<>();
-
-        Budget_Type(int value) {
-            this.value = value;
-        }
-
-        static {
-            for (Budget_Type type : Budget_Type.values()) {
-                map.put(type.value, type);
-            }
-        }
-
-        public static Budget_Type valueOf (int type_value){
-            return (Budget_Type) map.get(type_value);
-        }
-
-        public int getValue (){
-            return value;
-        }
-    }
-
-    public Budget_Type type;
-
-    public Budget_Type getType() {
-        return type;
-    }
-
-    public void setType(Budget_Type mType) {
-        this.type = mType;
-    }
+    public int budgetType;
+    public static final int Weekly = 0;
+    public static final int Monthly = 1;
 
     public Budget() {
     }
 
-    public Budget(int id, int user, Budget_Type mType,String mName, int mAmount, @Nullable String mDescription) {
-        this.id = id;
-        this.user = user;
-        this.type = mType;
-        this.name = mName;
-        this.amount = mAmount;
-        this.description = mDescription;
+    public static Budget createNewWeeklyBudget(String mName, int mAmount, @Nullable String mDescription) {
+
+        Budget budget = new Budget();
+
+        budget.setName(mName);
+        budget.setAmount(mAmount);
+        budget.setDescription(mDescription);
+        budget.budgetType = Weekly;
+
+        return budget;
     }
 
-    public Budget(int user, String mName, int mAmount, String mDescription) {
-        this.user = user;
+    public static Budget createNewMonthlyBudget(String mName, int mAmount, @Nullable String mDescription) {
+
+        Budget budget = new Budget();
+
+        budget.setName(mName);
+        budget.setAmount(mAmount);
+        budget.setDescription(mDescription);
+        budget.budgetType = Monthly;
+
+        return budget;
+    }
+
+    public Budget(int user, String mName, int mAmount,@Nullable String mDescription) {
         this.name = mName;
         this.amount = mAmount;
         this.description = mDescription;
@@ -82,16 +63,6 @@ public class Budget {
         this.id = id;
     }
 
-    public int getUser() {
-        return user;
-    }
-
-    public void setUser(int user) {
-        this.user = user;
-    }
-
-
-
     public String getName() {
         return name;
     }
@@ -100,7 +71,7 @@ public class Budget {
         this.name = mName;
     }
 
-    public int getAmount() {
+    public long getAmount() {
         return amount;
     }
 
@@ -108,14 +79,13 @@ public class Budget {
         this.amount = mAmount;
     }
 
-    public int getUsedAmount() {
+    public long getUsedAmount() {
         return usedAmount;
     }
 
     public void setUsedAmount(int mUsedAmount) {
         this.usedAmount = mUsedAmount;
     }
-
 
     public String getDescription() {
         return description;

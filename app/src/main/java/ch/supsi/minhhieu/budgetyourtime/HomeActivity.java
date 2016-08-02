@@ -1,8 +1,10 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.multidex.MultiDex;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -13,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
 
@@ -23,7 +26,13 @@ public class HomeActivity extends AppCompatActivity
     DBHelper db;
     NavigationView navigationView = null;
     Toolbar toolbar = null;
+    TextView mUserName, mUserEmail;
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +40,8 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
         db = DBHelper.getInstance(this);
         FloatingActionButton fab_new_activity = (FloatingActionButton) findViewById(R.id.add_new_activity);
         fab_new_activity.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +64,7 @@ public class HomeActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
         fragmentTransaction.commit();
+
     }
 
     @Override
@@ -87,6 +99,7 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -110,13 +123,16 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void createNewBudget() {
-        Intent budgetIntent = new Intent(this,AddEditBudgetActivity.class);
+        Intent budgetIntent = new Intent(HomeActivity.this,AddEditBudgetActivity.class);
+        budgetIntent.putExtra("typeOfDialog",AddEditBudgetActivity.ADD_NEW_BUDGET);
         startActivity(budgetIntent);
     }
 
     private void createNewItem(){
-        Intent itemIntent = new Intent(this, AddEditItemActivity.class);
+        Intent itemIntent = new Intent(HomeActivity.this, AddEditItemActivity.class);
+        itemIntent.putExtra("typeOfDialog",AddEditItemActivity.ADD_NEW_ITEM);
         startActivity(itemIntent);
+
     }
 
 }
