@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.model.people.Person;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,15 +64,20 @@ public class AddEditBudgetActivity extends Activity {
         if(typeOfDialog == ADD_NEW_BUDGET){
             addEditBudgetTitle.setText("Add New Budget");
         } else if (typeOfDialog == EDIT_BUDGET){
-
+            addEditBudgetTitle.setText("Edit Budget");
         }
+
+        setOnclickSave();
     }
 
-    private void initLook() {
+    private void setOnclickSave() {
         saveBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                nameText = budgetName.getText().toString().trim();
+                typeText = budgetType.getSelectedItem().toString();
+                amountText = budgetAmount.getText().toString().trim();
+                descriptionText = budgetDescription.getText().toString().trim();
             }
         });
     }

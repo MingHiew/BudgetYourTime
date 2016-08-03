@@ -28,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public final static String KEY_ID = "id";
 
     //items
-    public final static String KEY_BUDGET = "budget";
+    /*public final static String KEY_BUDGET = "budget";
     public final static String KEY_STARTTIME = "starttime";
     public final static String KEY_ENDTIME = "endtime";
     public final static String KEY_LOCATION = "location";
@@ -43,7 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + KEY_DURATION + " INTEGER,"
             + KEY_BUDGET + " INTEGER,"
             + "FOREIGN KEY (" + KEY_BUDGET + ") REFERENCES " + TABLE_BUDGET + " (" + KEY_ID + ") "
-            + ")";
+            + ")";*/
 
     //budgets
     public final static String KEY_NAME = "name";
@@ -83,25 +83,25 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_BUDGET);
-        db.execSQL(CREATE_TABLE_ITEM);
+        //db.execSQL(CREATE_TABLE_ITEM);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUDGET);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
         onCreate(db);
     }
 
     /***********************************************************************************
      BUDGETS
      **********************************************************************************/
-    /*public void addBudget(Budget b){
+    public void addNewBudget(Budget b){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, b.getName());
         values.put(KEY_AMOUNT,b.getAmount());
-        values.put(KEY_USEDAMOUNT, b.getUsedAmount());
+        values.put(KEY_USEDAMOUNT, 0);
         values.put(KEY_TYPE, b.getBudgetType());
         values.put(KEY_DESCRIPTION, b.getDescription());
         db.insert(TABLE_BUDGET,null,values);
@@ -110,34 +110,47 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Budget getBudget (int id){
         SQLiteDatabase db = this.getReadableDatabase();
-
+        Budget budget = new Budget();
         Cursor cursor = db.query(TABLE_BUDGET, new String[] {KEY_ID, KEY_NAME,
                          KEY_AMOUNT, KEY_USEDAMOUNT, KEY_TYPE, KEY_DESCRIPTION}, KEY_ID + "=?",
                 new String[] {String.valueOf(id)}, null, null, null, null);
         if(cursor!=null)
             cursor.moveToFirst();
+        if (cursor.getInt(5) == 0) {
+            budget = Budget.constructWeeklyBudget(
+                    cursor.getString(1), cursor.getLong(2),
+                    cursor.getLong(3), cursor.getString(6));
+        } else if (cursor.getInt(5) == 1){
+            budget = Budget.constructMonthlyBudget(
+                    cursor.getString(1), cursor.getLong(2),
+                    cursor.getLong(3), cursor.getString(6));
 
-        Budget budget = new Budget(cursor.getInt(0),
-                cursor.getInt(1), cursor.getString(2),
-                cursor.getString(3),cursor.getInt(4),cursor.getString(5));
+        }
 
         return budget;
     }
 
-    public List<Budget> getAllUserBudgets (){
+    public List<Budget> getAllBudgets (){
         List<Budget> list = new ArrayList<Budget>();
-        SQLiteDatabase db = this.getWritableDatabase();
 
         String query = "SELECT * FROM" + TABLE_BUDGET;
+        SQLiteDatabase db = this.getWritableDatabase();
+
         Cursor cursor = db.rawQuery(query,null);
         if(cursor.moveToFirst()){
             do{
-                Budget b= new Budget();
-                b.setId(cursor.getInt(0));
-                b.setBudgetType(cursor.getString(2));
-                b.setName(cursor.getString(3));
-                b.setAmount(cursor.getInt(4));
-                b.setDescription(cursor.getString(5));
+                Budget b = new Budget();
+
+                if (cursor.getInt(5) == 0) {
+                    b = Budget.constructWeeklyBudget(
+                            cursor.getString(1), cursor.getLong(2),
+                            cursor.getLong(3), cursor.getString(6));
+                } else if (cursor.getInt(5) == 1){
+                    b = Budget.constructMonthlyBudget(
+                            cursor.getString(1), cursor.getLong(2),
+                            cursor.getLong(3), cursor.getString(6));
+
+                }
                 list.add(b);
             }
             while(cursor.moveToNext());
@@ -155,7 +168,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return db.update(TABLE_BUDGET, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(b.getId()) });
-    }*/
+    }
 
 
     public void deleteBudget (Budget b){}
@@ -163,7 +176,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /***********************************************************************************
      ITEMS
      **********************************************************************************/
-    public void addItem (Item i){
+    /*public void addItem (Item i){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_STARTTIME, String.valueOf(i.getStartTime()));
@@ -236,6 +249,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public double getSpentDuration (Budget b) {
         double d = 0;
         return d;
-    }
+    }*/
 
 }

@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:gravity="top|left"
-            android:lines="6"
+            android:lines="3"
             android:ems="10"
             android:hint="Add budget description..."
             android:id="@+id/budget_description" />

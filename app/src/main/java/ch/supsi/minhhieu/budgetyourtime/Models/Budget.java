@@ -25,24 +25,26 @@ public class Budget {
     public Budget() {
     }
 
-    public static Budget createNewWeeklyBudget(String mName, int mAmount, @Nullable String mDescription) {
+    public static Budget constructWeeklyBudget(String mName, long mAmount, long mUsedAmount, @Nullable String mDescription) {
 
         Budget budget = new Budget();
 
         budget.setName(mName);
         budget.setAmount(mAmount);
+        budget.setUsedAmount(mUsedAmount);
         budget.setDescription(mDescription);
         budget.budgetType = Weekly;
 
         return budget;
     }
 
-    public static Budget createNewMonthlyBudget(String mName, int mAmount, @Nullable String mDescription) {
+    public static Budget constructMonthlyBudget(String mName, long mAmount, long mUsedAmount, @Nullable String mDescription) {
 
         Budget budget = new Budget();
 
         budget.setName(mName);
         budget.setAmount(mAmount);
+        budget.setUsedAmount(mUsedAmount);
         budget.setDescription(mDescription);
         budget.budgetType = Monthly;
 
@@ -75,7 +77,7 @@ public class Budget {
         return amount;
     }
 
-    public void setAmount(int mAmount) {
+    public void setAmount(long mAmount) {
         this.amount = mAmount;
     }
 
@@ -83,12 +85,16 @@ public class Budget {
         return usedAmount;
     }
 
-    public void setUsedAmount(int mUsedAmount) {
+    public void setUsedAmount(long mUsedAmount) {
         this.usedAmount = mUsedAmount;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public int getBudgetType() {
+        return budgetType;
     }
 
     public void setDescription(String mDescription) {
