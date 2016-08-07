@@ -27,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //Common keys
     public final static String KEY_ID = "id";
+    public static final String _ID = "_id";
 
     //items
     public final static String KEY_BUDGET = "budget";
@@ -162,8 +163,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(b.getId()) });
     }
 
-    public int getBudgetAmount() {
-        return 1;
+    public Cursor getAllBudgetCursor(boolean adapter){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String id = KEY_ID;
+        if(adapter){
+            id = KEY_ID +" "+_ID;
+        }
+        String columns = id+", "+KEY_NAME;
+        String selectQuery = "SELECT " + columns + " FROM " + TABLE_BUDGET;
+        return db.rawQuery(selectQuery, null);
+
     }
 
     public void deleteBudget (Budget b){}

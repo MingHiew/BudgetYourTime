@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -25,8 +27,7 @@ public class OverviewFragment extends Fragment {
 
     @BindView(R.id.budget_list)
     @Nullable ListView budgetList;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+
 
 
     //@BindView(R.id.testTV)
@@ -43,7 +44,8 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Toolbar toolbar = ButterKnife.findById(getActivity(),R.id.my_toolbar);
+        toolbar.setTitle(getString(R.string.title_fragment_overview));
         db = DBHelper.getInstance(this.getContext());
 
     }
@@ -56,7 +58,7 @@ public class OverviewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
         ButterKnife.bind(this,view);
-        toolbar.setTitle(getString(R.string.title_fragment_overview));
+
         List<Budget> list = db.getAllBudgets();
         //String output = "";
         //for (int i=0; i<=list.size()-1;i++){
@@ -67,5 +69,10 @@ public class OverviewFragment extends Fragment {
         //testTV.setText(output);
         return view;
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

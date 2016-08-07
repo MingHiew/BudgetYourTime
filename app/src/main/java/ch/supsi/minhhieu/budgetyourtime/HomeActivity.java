@@ -39,11 +39,13 @@ public class HomeActivity extends AppCompatActivity
         MultiDex.install(this);
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         db = DBHelper.getInstance(this);
         FloatingActionButton fab_new_activity = (FloatingActionButton) findViewById(R.id.add_new_activity);
@@ -63,10 +65,11 @@ public class HomeActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        OverviewFragment overviewFragment = new OverviewFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
-        fragmentTransaction.commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, OverviewFragment.newInstance())
+                    .commit();
+        }
     }
 
     @Override
@@ -101,6 +104,12 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.toolbar
+                .setTitle(R.string.title_fragment_overview);
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

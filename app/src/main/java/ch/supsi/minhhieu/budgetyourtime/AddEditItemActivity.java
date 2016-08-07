@@ -3,6 +3,7 @@ package ch.supsi.minhhieu.budgetyourtime;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -14,8 +15,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import java.util.Calendar;
@@ -30,6 +36,8 @@ public class AddEditItemActivity extends FragmentActivity {
 
     @BindView(R.id.item_act_title)
     TextView itemActivityTitle;
+    @BindView(R.id.spinner_budget_name)
+    Spinner budgetName;
     @BindView(R.id.save_item)
     ImageView saveItem;
     @BindView(R.id.act_starttime)
@@ -69,6 +77,7 @@ public class AddEditItemActivity extends FragmentActivity {
         typeOfDialog = intent.getIntExtra("typeOfDialog",2);
         itemID = (int) intent.getLongExtra("itemId", 1);
         if (typeOfDialog == ADD_NEW_ITEM) {
+            itemActivityTitle.setText("Add New Activity");
             presetAddNewActivityViews();
         }
         setupViewsBehaviours();
@@ -80,18 +89,24 @@ public class AddEditItemActivity extends FragmentActivity {
         if (activityDate == null) return;
         final long today = CalendarUtils.today();
         activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, today));
-        mItem.date.setTimeInMillis(today);
         startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
                 CalendarUtils.getNearestHourAndMinutes()));
-        mItem.startTime.setTimeInMillis(CalendarUtils.getNearestHourAndMinutes());
         endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
                 CalendarUtils.getNearestHourAndMinutes()+3600000));
-        mItem.endTime.setTimeInMillis(CalendarUtils.getNearestHourAndMinutes()+3600000);
         //autocompleteView.setAdapter(new PlacesAutoCompleteAdapter(AddEditItemActivity.this, R.layout.location_autocomplete));
-
 
     }
     private void setupViewsBehaviours() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SpinnerAdapter mSpinnerAdapter = new SimpleCursorAdapter(this,
+                    android.R.layout.simple_list_item_1,
+                    db.getAllBudgetCursor(true),
+                    new String[] { db.KEY_NAME },
+                    new int[] { android.R.id.text1 },
+                    0);
+            budgetName.setAdapter(mSpinnerAdapter);
+        }
+
         //Preset the date
         activityDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +131,6 @@ public class AddEditItemActivity extends FragmentActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String description = (String) parent.getItemAtPosition(position).toString();
-                //Toast.makeText(AddEditItemActivity.this, description, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -127,17 +141,19 @@ public class AddEditItemActivity extends FragmentActivity {
 
     private void showDatePicker() {
         final Calendar date = Calendar.getInstance();
-        new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.set(year, monthOfYear, dayOfMonth);
-                activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, date.getTimeInMillis()));
-                mItem.setDate(date);
-            }
-        }, date.get(Calendar.YEAR),
-                date.get(Calendar.MONTH),
-                date.get(Calendar.DAY_OF_MONTH))
-                .show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    date.set(year, monthOfYear, dayOfMonth);
+                    activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, date.getTimeInMillis()));
+                    mItem.setDate(date);
+                }
+            }, date.get(Calendar.YEAR),
+                    date.get(Calendar.MONTH),
+                    date.get(Calendar.DAY_OF_MONTH))
+                    .show();
+        }
     }
 
     private void showTimePicker(final boolean start) {
@@ -170,5 +186,45 @@ public class AddEditItemActivity extends FragmentActivity {
                 duration = mItem.endTime.getTimeInMillis() - mItem.startTime.getTimeInMillis();
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "AddEditItem Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://ch.supsi.minhhieu.budgetyourtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "AddEditItem Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://ch.supsi.minhhieu.budgetyourtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1043802573348",
+    "project_id": "budgetyourtime"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043802573348:android:0c4899317b1eb794",
+        "android_client_info": {
+          "package_name": "ch.supsi.minhhieu.budgetyourtime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043802573348-ujtpjru829t8bnc8f73bl4aq060nmhar.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.supsi.minhhieu.budgetyourtime",
+            "certificate_hash": "8E03DAFBE7EABCAAA4817ED0655FDF01A57B1EF7"
+          }
+        },
+        {
+          "client_id": "1043802573348-8jvq0o63hjco3oim2r4am27g39011n3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBvZ0dbQ31InEdlK2wFWkJuEFuxNI4a6E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
