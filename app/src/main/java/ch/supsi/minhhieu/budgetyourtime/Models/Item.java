@@ -19,7 +19,7 @@ public class Item {
 
     public Calendar startTime = Calendar.getInstance();
     public Calendar endTime = Calendar.getInstance();
-    private long duration;
+    private double duration;
 
     public Item() {
         startTime.add(Calendar.HOUR_OF_DAY, 1);
@@ -29,7 +29,7 @@ public class Item {
     }
 
 
-    public Item(int id, Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, int mBudget) {
+    public Item(int id, Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, double mDuration, int mBudget) {
         this.id = id;
         this.date = mDate;
         this.startTime.setTimeInMillis(dateStart);
@@ -37,6 +37,17 @@ public class Item {
         this.location = mLocation;
         this.description = mDescription;
         this.duration = mDuration;
+        this.budget = mBudget;
+    }
+
+    public Item(int id, Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  int mBudget) {
+        this.id = id;
+        this.date = mDate;
+        this.startTime.setTimeInMillis(dateStart);
+        this.endTime.setTimeInMillis(dateEnd);
+        this.location = mLocation;
+        this.description = mDescription;
+        this.duration = endTime.getTimeInMillis() - startTime.getTimeInMillis();
         this.budget = mBudget;
     }
 
@@ -64,7 +75,7 @@ public class Item {
         return location;
     }
 
-    public long getDuration() {
+    public double getDuration() {
         return duration;
     }
 

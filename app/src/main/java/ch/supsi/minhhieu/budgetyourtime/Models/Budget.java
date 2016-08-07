@@ -15,9 +15,8 @@ public class Budget {
 
     private int id;
     private String name;
-    private long amount;
-    private long usedAmount;
-    private String description;
+    private int amount;
+    private String notes;
     public int budgetType;
     public static final int Weekly = 0;
     public static final int Monthly = 1;
@@ -25,36 +24,32 @@ public class Budget {
     public Budget() {
     }
 
-    public static Budget constructWeeklyBudget(String mName, long mAmount, long mUsedAmount, @Nullable String mDescription) {
+    public static Budget constructWeeklyBudget(String mName, int mAmount) {
 
         Budget budget = new Budget();
 
         budget.setName(mName);
         budget.setAmount(mAmount);
-        budget.setUsedAmount(mUsedAmount);
-        budget.setDescription(mDescription);
         budget.budgetType = Weekly;
 
         return budget;
     }
 
-    public static Budget constructMonthlyBudget(String mName, long mAmount, long mUsedAmount, @Nullable String mDescription) {
+    public static Budget constructMonthlyBudget(String mName, int mAmount) {
 
         Budget budget = new Budget();
 
         budget.setName(mName);
         budget.setAmount(mAmount);
-        budget.setUsedAmount(mUsedAmount);
-        budget.setDescription(mDescription);
         budget.budgetType = Monthly;
 
         return budget;
     }
 
-    public Budget(int user, String mName, int mAmount,@Nullable String mDescription) {
+    public Budget(int user, String mName, int mAmount,@Nullable String mNotes) {
         this.name = mName;
         this.amount = mAmount;
-        this.description = mDescription;
+        this.notes = mNotes;
     }
 
     public int getId() {
@@ -73,31 +68,16 @@ public class Budget {
         this.name = mName;
     }
 
-    public long getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(long mAmount) {
+    public void setAmount(int mAmount) {
         this.amount = mAmount;
-    }
-
-    public long getUsedAmount() {
-        return usedAmount;
-    }
-
-    public void setUsedAmount(long mUsedAmount) {
-        this.usedAmount = mUsedAmount;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public int getBudgetType() {
         return budgetType;
     }
 
-    public void setDescription(String mDescription) {
-        this.description = mDescription;
-    }
 }

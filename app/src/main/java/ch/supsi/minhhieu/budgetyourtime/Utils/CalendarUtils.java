@@ -67,6 +67,12 @@ public class CalendarUtils {
                         DateUtils.FORMAT_SHOW_YEAR);
     }
 
+    public static String getOneWeek(){
+        return "2016, May 2 - 8";
+    }
+
+
+
     /**
      * Formats given time to a readable month string, e.g. March 2016
      * @param context       resources provider

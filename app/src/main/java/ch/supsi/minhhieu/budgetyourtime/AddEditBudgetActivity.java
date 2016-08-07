@@ -2,20 +2,16 @@ package ch.supsi.minhhieu.budgetyourtime;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.model.people.Person;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,8 +26,6 @@ public class AddEditBudgetActivity extends Activity {
     Spinner budgetType;
     @BindView(R.id.budget_amount)
     EditText budgetAmount;
-    @BindView(R.id.budget_description)
-    EditText budgetDescription;
     @BindView(R.id.budget_act_title)
     TextView addEditBudgetTitle;
     @BindView(R.id.save_budget)
@@ -77,7 +71,31 @@ public class AddEditBudgetActivity extends Activity {
                 nameText = budgetName.getText().toString().trim();
                 typeText = budgetType.getSelectedItem().toString();
                 amountText = budgetAmount.getText().toString().trim();
-                descriptionText = budgetDescription.getText().toString().trim();
+
+                if(amountText.equals("")){
+                    Toast.makeText(AddEditBudgetActivity.this, getResources().getString(R.string.error_edit_amount), Toast.LENGTH_SHORT).show();
+                } else {
+                    switch (typeOfDialog) {
+                        case ADD_NEW_BUDGET:
+                            if (typeText.equals("Monthly")) {
+                                budget = Budget.constructMonthlyBudget(nameText,Integer.parseInt(amountText));
+                                db.addNewBudget(budget);
+                                Toast.makeText(AddEditBudgetActivity.this, getResources().getString(R.string.save_budget), Toast.LENGTH_SHORT).show();
+
+                            } else if(typeText.equals("Weekly")) {
+                                budget = Budget.constructWeeklyBudget(nameText,Integer.parseInt(amountText));
+                                db.addNewBudget(budget);
+                                Toast.makeText(AddEditBudgetActivity.this, getResources().getString(R.string.save_budget), Toast.LENGTH_SHORT).show();
+
+
+                            }
+                            break;
+                        case EDIT_BUDGET:
+                            break;
+                    }
+                }
+                AddEditBudgetActivity.this.setResult(RESULT_OK);
+                finish();
             }
         });
     }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/iron"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/budget_list_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDarker" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/btn_previous_timeframe"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="bottom"
+            android:src="@drawable/ic_chevron_left_black_18dp"/>
+        <TextView
+            android:id="@+id/budget_list_timeframe"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:textAlignment="gravity"
+            android:textColor="@color/black"
+             android:text="2016,May 2 - 8"/>
+        <ImageButton
+            android:id="@+id/btn_next_timeframe"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:layout_gravity="bottom"
+            android:src="@drawable/ic_chevron_right_black_18dp"/>
+        <TextView
+            android:id="@+id/budget_list_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@color/red"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:textStyle="bold"
+            android:gravity="right"/>
+    </LinearLayout>
+    <com.daasuu.ahp.AnimateHorizontalProgressBar
+        android:id="@+id/budget_consumption_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        app:ahp_backgroundColor="@color/colorPrimaryDark"
+        app:ahp_progressColor="@color/colorAccent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/budget_consumed"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:text="Spent: 4 hours"/>
+        <TextView
+            android:id="@+id/budget_remained"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:text="Remain: 4 hours"/>
+    </LinearLayout>
+</LinearLayout>

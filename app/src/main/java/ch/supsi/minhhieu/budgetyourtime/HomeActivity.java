@@ -1,5 +1,6 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,16 +18,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
 
     private static final String TAG = "HomeActivity";
     DBHelper db;
-    NavigationView navigationView = null;
     Toolbar toolbar = null;
     TextView mUserName, mUserEmail;
+    public static final int OVERVIEW_FRAGMENT = 1;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -40,8 +45,6 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
         db = DBHelper.getInstance(this);
         FloatingActionButton fab_new_activity = (FloatingActionButton) findViewById(R.id.add_new_activity);
         fab_new_activity.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +67,6 @@ public class HomeActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
         fragmentTransaction.commit();
-
     }
 
     @Override
@@ -105,7 +107,6 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_overview) {
             OverviewFragment overviewFragment = new OverviewFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
