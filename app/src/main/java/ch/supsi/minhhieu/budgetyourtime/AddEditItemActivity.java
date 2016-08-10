@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -54,9 +55,10 @@ public class AddEditItemActivity extends FragmentActivity {
     public static final int ADD_NEW_ITEM = 1;
     public static final int EDIT_ITEM = 2;
     DBHelper db;
-    private int itemID,typeOfDialog;
+    private int mBudget, itemID,typeOfDialog;
+    private long mStartTime, mEndTime;
     private String locationText, descriptionText,startTimeText, endTimeText, dateText;
-    private long duration;
+    private Calendar mDate = Calendar.getInstance();
     private Item mItem = new Item();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -89,10 +91,10 @@ public class AddEditItemActivity extends FragmentActivity {
         if (activityDate == null) return;
         final long today = CalendarUtils.today();
         activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, today));
-        startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
-                CalendarUtils.getNearestHourAndMinutes()));
-        endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
-                CalendarUtils.getNearestHourAndMinutes()+3600000));
+        mStartTime = CalendarUtils.getNearestHourAndMinutes();
+        startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this, mStartTime));
+        mEndTime = CalendarUtils.getNearestHourAndMinutes()+3600000;
+        endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,mEndTime));
         //autocompleteView.setAdapter(new PlacesAutoCompleteAdapter(AddEditItemActivity.this, R.layout.location_autocomplete));
 
     }
@@ -134,6 +136,16 @@ public class AddEditItemActivity extends FragmentActivity {
             }
         });
 
+        budgetName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mBudget = (int) id;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         setOnclickSaveButton();
 
     }
@@ -147,7 +159,7 @@ public class AddEditItemActivity extends FragmentActivity {
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     date.set(year, monthOfYear, dayOfMonth);
                     activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, date.getTimeInMillis()));
-                    mItem.setDate(date);
+                    mDate = date;
                 }
             }, date.get(Calendar.YEAR),
                     date.get(Calendar.MONTH),
@@ -157,7 +169,7 @@ public class AddEditItemActivity extends FragmentActivity {
     }
 
     private void showTimePicker(final boolean start) {
-        final Calendar date = start ? mItem.startTime : mItem.endTime;
+        final Calendar date = Calendar.getInstance();
 
         new CustomTimePickerDialog(this, AlertDialog.THEME_TRADITIONAL, new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -165,13 +177,12 @@ public class AddEditItemActivity extends FragmentActivity {
                 date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 date.set(Calendar.MINUTE, minute);
                 if (start) {
-                    startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
-                            date.getTimeInMillis()));
-                    mItem.setStartTime(date);
+                    mStartTime = date.getTimeInMillis();
+                    startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this, mStartTime));
                 } else {
+                    mEndTime = date.getTimeInMillis();
                     endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
-                            date.getTimeInMillis()));
-                    mItem.setEndTime(date);
+                            mEndTime));
                 }
             }
         }, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), false).show();
@@ -183,7 +194,11 @@ public class AddEditItemActivity extends FragmentActivity {
             public void onClick(View v) {
                 locationText = autocompleteView.getText().toString().trim();
                 descriptionText = itemDescription.getText().toString().trim();
-                duration = mItem.endTime.getTimeInMillis() - mItem.startTime.getTimeInMillis();
+                mItem = new Item(mDate,mStartTime,mEndTime,locationText,descriptionText,mBudget);
+                db.addItem(mItem);
+                Toast.makeText(AddEditItemActivity.this, getResources().getString(R.string.save_item), Toast.LENGTH_SHORT).show();
+                AddEditItemActivity.this.setResult(RESULT_OK);
+                finish();
             }
         });
     }

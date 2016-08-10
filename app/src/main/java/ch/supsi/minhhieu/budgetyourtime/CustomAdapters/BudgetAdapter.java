@@ -70,14 +70,13 @@ public class BudgetAdapter extends BaseAdapter{
         }
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.budgetListTitle.setText(t.getName());
-        bugetType = t.getBudgetType();
+        viewHolder.budgetListTitle.setText(t.name);
 
-        if (bugetType == 0){
-            viewHolder.budgetListAdmount.setText(String.valueOf(t.getAmount())+" hours/week");
-        } else if (bugetType == 1){
-            viewHolder.budgetListAdmount.setText(String.valueOf(t.getAmount())+" hours/month");
-        }
+        //if (bugetType == 0){
+        //    viewHolder.budgetListAdmount.setText(String.valueOf(t.getAmount())+" hours/week");
+        //} else if (bugetType == 1){
+        //    viewHolder.budgetListAdmount.setText(String.valueOf(t.getAmount())+" hours/month");
+        //}
 
         return view;
     }

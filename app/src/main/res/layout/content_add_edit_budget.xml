@@ -43,7 +43,6 @@
             android:id="@+id/spinner_budget_type"
             android:layout_width="270dp"
             android:layout_height="match_parent"
-            android:entries="@array/budget_arrays"
             android:prompt="@string/budget_types" />
     </LinearLayout>
     <LinearLayout

@@ -4,37 +4,44 @@
     <string name="title_activity_add_edit_budget">AddEditBudgetActivity</string>
     <string name="title_activity_add_edit_item">AddEditItemActivity</string>
     <string name="budget_types">Budget Types</string>
-    <string-array name="budget_arrays">
-        <item>Weekly</item>
-        <item>Monthly</item>
-    </string-array>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!-- transaction list periods -->
-    <string name="all_transaction">All transactions</string>
-    <string name="today">Today</string>
-    <string name="last7days">Last 7 days</string>
-    <string name="last15days">Last 2 weeks</string>
-    <string name="current_month">Current month</string>
-    <string name="current_year">Current year</string>
-    <string name="future_transactions">Future transactions</string>
+    <!-- periods -->
+    <string name="period_today">Today</string>
+    <string name="period_yesterday">Yesterday</string>
+    <string name="period_this_week">This week</string>
+    <string name="period_this_month">This month</string>
+    <string name="period_last_week">Last week</string>
+    <string name="period_last_month">Last month</string>
+    <string name="period_this_and_last_week">This and last week</string>
+    <string name="period_this_and_last_month">This and last month</string>
+    <string name="period_tomorrow">Tomorrow</string>
+    <string name="period_next_week">Next week</string>
+    <string name="period_next_month">Next month</string>
+    <string name="period_this_and_next_month">This and next month</string>
+    <string name="period_next_3_months">Next 3 months</string>
+    <string name="period_custom">Custom</string>
 
-    <!--<string name="option">Option</string>-->
-    <string name="all_time">All Time</string>
-    <string name="last_month">Previous Month</string>
-    <string name="last30days">Last 30 Days</string>
-    <string name="last_year">Previous Year</string>
-    <string name="last3months">Last 3 months</string>
-    <string name="last6months">Last 6 months</string>
+    <!-- Recur -->
+    <string name="recur_interval_weekly">Weekly</string>
+    <string name="recur_interval_monthly">Monthly</string>
+    <string name="recur_stops_on_date">Stops on date</string>
+    <string name="recur_stops_on_date_summary">Stops on: %s</string>
+    <string name="recur_indefinitely">Indefinitely</string>
+    <string name="recur_exactly_n_times">Exactly N times</string>
+    <string name="recur_exactly_n_times_summary">Exactly %d time(s)</string>
+    <string name="recur_repeat_starts_on">Starts on</string>
+    <string name="recur_repeat_stops_on">Stops on</string>
 
     <!-- Errors -->
     <string name="error_edit_amount">Please enter a valid amount</string>
 
     <!-- Budget -->
     <string name="save_budget">Budget successfully created!</string>
+    <string name="save_item">Item successfully created!</string>
 
     <!-- Page titles -->
     <string name="title_fragment_overview">Overview</string>

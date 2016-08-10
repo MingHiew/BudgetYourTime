@@ -11,7 +11,11 @@ import java.util.Calendar;
 import java.util.List;
 
 import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
+import ch.supsi.minhhieu.budgetyourtime.Models.BudgetRecord;
 import ch.supsi.minhhieu.budgetyourtime.Models.Item;
+import ch.supsi.minhhieu.budgetyourtime.Utils.Period;
+import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils;
+import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils.Recur;
 
 /**
  * Created by acer on 18/07/2016.
@@ -24,42 +28,59 @@ public class DBHelper extends SQLiteOpenHelper {
     public final static String DATABASE_NAME = "BudgetYourTime.sqlite";
     public final static String TABLE_ITEM = "ITEMS";
     public final static String TABLE_BUDGET = "BUDGETS";
+    public final static String TABLE_BR = "BUDGETRECORDS";
 
     //Common keys
     public final static String KEY_ID = "id";
     public static final String _ID = "_id";
 
     //items
-    public final static String KEY_BUDGET = "budget";
+    public final static String KEY_BR = "budgetrecord";
     public final static String KEY_DATE = "date";
     public final static String KEY_STARTTIME = "starttime";
     public final static String KEY_ENDTIME = "endtime";
     public final static String KEY_LOCATION = "location";
     public final static String KEY_IDESCRIPTION = "description";
     public final static String KEY_DURATION = "duration";
-    public final static String CREATE_TABLE_ITEM ="CREATE TABLE" + TABLE_ITEM + "("
-            + KEY_ID + "INTEGER PRIMARY KEY,"
-            + KEY_DATE + "DATE,"
+    public final static String CREATE_TABLE_ITEM ="CREATE TABLE " + TABLE_ITEM + "("
+            + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_DATE + " DATE,"
             + KEY_STARTTIME + " DATETIME,"
             + KEY_ENDTIME + " DATETIME,"
             + KEY_LOCATION + " TEXT,"
             + KEY_IDESCRIPTION + " TEXT,"
             + KEY_DURATION + " NUMERIC,"
-            + KEY_BUDGET + " INTEGER,"
-            + "FOREIGN KEY (" + KEY_BUDGET + ") REFERENCES " + TABLE_BUDGET + " (" + KEY_ID + ") "
+            + KEY_BR + " INTEGER,"
+            + "FOREIGN KEY (" + KEY_BR + ") REFERENCES " + TABLE_BR + " (" + KEY_ID + ")"
             + ")";
 
     //budgets
     public final static String KEY_NAME = "name";
     public final static String KEY_AMOUNT = "amount";
-    public final static String KEY_TYPE = "type";
+    public final static String KEY_RECUR = "recur";
     public final static String CREATE_TABLE_BUDGET = "CREATE TABLE " + TABLE_BUDGET + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_NAME + " TEXT,"
             + KEY_AMOUNT + " INTEGER,"
-            + KEY_TYPE + " INTEGER"
+            + KEY_RECUR + " TEXT"
             + ")";
 
+    //budgetRecords
+    public final static String KEY_STARTDATE = "startdate";
+    public final static String KEY_ENDATE =  "enddate";
+    public final static String KEY_BUDGET = "budget";
+    public final static String KEY_SPENT = "spent";
+    public final static String KEY_BALANCE = "balance";
+    public volatile boolean updated = false;
+    public final static String CREATE_TABLE_BR = "CREATE TABLE " + TABLE_BR + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_STARTDATE + " DATETIME,"
+            + KEY_ENDATE + " DATETIME,"
+            + KEY_BUDGET + " INTEGER,"
+            + KEY_SPENT + " NUMERIC,"
+            + KEY_BALANCE + " NUMERIC,"
+            + "FOREIGN KEY (" + KEY_BUDGET + ") REFERENCES " + TABLE_BUDGET + " (" + KEY_ID + ")"
+            + ")";
 
     //Singleton
     private static DBHelper instance;
@@ -83,12 +104,14 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_BUDGET);
+        db.execSQL(CREATE_TABLE_BR);
         db.execSQL(CREATE_TABLE_ITEM);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUDGET);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BR);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
         onCreate(db);
     }
@@ -98,11 +121,27 @@ public class DBHelper extends SQLiteOpenHelper {
      **********************************************************************************/
     public void addNewBudget(Budget b){
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAME, b.getName());
-        values.put(KEY_AMOUNT,b.getAmount());
-        values.put(KEY_TYPE, b.getBudgetType());
-        db.insert(TABLE_BUDGET,null,values);
+        ContentValues bugetValues = new ContentValues();
+        bugetValues.put(KEY_NAME, b.name);
+        bugetValues.put(KEY_AMOUNT,b.amount);
+        bugetValues.put(KEY_RECUR, b.recur);
+
+        db.insert(TABLE_BUDGET,null,bugetValues);
+        Recur recur = RecurUtils.createFromExtraString(b.recur);
+        Period[] periods = RecurUtils.periods(recur);
+        for (int i=0; i<periods.length; i++) {
+            Period p = periods[i];
+            BudgetRecord br = new BudgetRecord();
+            ContentValues brValues = new ContentValues();
+            br.budgetID = b.getId();
+            br.startDate = p.start;
+            br.endDate = p.end;
+            brValues.put(KEY_BUDGET,br.budgetID);
+            brValues.put(KEY_STARTDATE,br.startDate);
+            brValues.put(KEY_ENDATE,br.endDate);
+            db.insert(TABLE_BR,null,brValues);
+        }
+
         db.close();
     }
 
@@ -110,18 +149,11 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Budget budget = new Budget();
         Cursor cursor = db.query(TABLE_BUDGET, new String[] {KEY_ID, KEY_NAME,
-                         KEY_AMOUNT, KEY_TYPE}, KEY_ID + "=?",
+                         KEY_AMOUNT, KEY_RECUR}, KEY_ID + "=?",
                 new String[] {String.valueOf(id)}, null, null, null, null);
         if(cursor!=null)
             cursor.moveToFirst();
-        if (cursor.getInt(5) == 0) {
-            budget = Budget.constructWeeklyBudget(
-                    cursor.getString(1), cursor.getInt(2));
-        } else if (cursor.getInt(5) == 1){
-            budget = Budget.constructMonthlyBudget(
-                    cursor.getString(1), cursor.getInt(2));
-
-        }
+            budget = new Budget(cursor.getString(1),cursor.getInt(2),cursor.getString(3));
 
         return budget;
     }
@@ -135,16 +167,8 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query,null);
         if(cursor.moveToFirst()){
             do{
-                Budget b = new Budget();
+                Budget b = new Budget(cursor.getString(1),cursor.getInt(2),cursor.getString(3));
 
-                if (cursor.getInt(3) == 0) {
-                    b = Budget.constructWeeklyBudget(
-                            cursor.getString(1), cursor.getInt(2));
-                } else if (cursor.getInt(3) == 1){
-                    b = Budget.constructMonthlyBudget(
-                            cursor.getString(1), cursor.getInt(2));
-
-                }
                 list.add(b);
             }
             while(cursor.moveToNext());
@@ -155,9 +179,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public int editBudget (Budget b){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, b.getName());
-        values.put(KEY_AMOUNT,b.getAmount());
-        values.put(KEY_TYPE, b.getBudgetType());
+        values.put(KEY_NAME, b.name);
+        values.put(KEY_AMOUNT,b.amount);
+        values.put(KEY_RECUR, b.recur);
+
+
 
         return db.update(TABLE_BUDGET, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(b.getId()) });
@@ -206,7 +232,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Calendar mDate = Calendar.getInstance();
         mDate.setTimeInMillis(cursor.getLong(1));
-        Item item = new Item(cursor.getInt(0), mDate, cursor.getLong(2),cursor.getLong(3),
+        Item item = new Item( mDate, cursor.getLong(2),cursor.getLong(3),
                 cursor.getString(4),cursor.getString(5), cursor.getDouble(6), cursor.getInt(7));
 
         return item;
@@ -223,7 +249,7 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 Calendar mDate = Calendar.getInstance();
                 mDate.setTimeInMillis(cursor.getLong(1));
-                Item item = new Item(cursor.getInt(0), mDate, cursor.getLong(2),cursor.getLong(3),
+                Item item = new Item(mDate, cursor.getLong(2),cursor.getLong(3),
                         cursor.getString(4),cursor.getString(5), cursor.getDouble(6), cursor.getInt(7));
                 list.add(item);
             } while (cursor.moveToNext());

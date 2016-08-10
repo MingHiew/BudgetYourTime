@@ -29,8 +29,7 @@ public class Item {
     }
 
 
-    public Item(int id, Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, double mDuration, int mBudget) {
-        this.id = id;
+    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, double mDuration, int mBudget) {
         this.date = mDate;
         this.startTime.setTimeInMillis(dateStart);
         this.endTime.setTimeInMillis(dateEnd);
@@ -40,8 +39,7 @@ public class Item {
         this.budget = mBudget;
     }
 
-    public Item(int id, Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  int mBudget) {
-        this.id = id;
+    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  int mBudget) {
         this.date = mDate;
         this.startTime.setTimeInMillis(dateStart);
         this.endTime.setTimeInMillis(dateEnd);
@@ -83,12 +81,36 @@ public class Item {
         return date;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setBudget(int mBudget) {
+        this.budget = mBudget;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setDuration(long mStartTime, long mEndTime) {
+        this.duration = mEndTime - mStartTime;
+    }
+
     public void setStartTime(Calendar startTime) {
         this.startTime = startTime;
     }
 
     public void setEndTime(Calendar endTime) {
         this.endTime = endTime;
+    }
+
+    public void setStartTime(long startTimeInMillis) {
+        this.startTime.setTimeInMillis(startTimeInMillis);
+    }
+
+    public void setEndTime(long endTimeInMillis) {
+        this.endTime.setTimeInMillis(endTimeInMillis);
     }
 
     public void setDate(Calendar date) {
