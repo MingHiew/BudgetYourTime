@@ -195,8 +195,8 @@ public class AddEditItemActivity extends FragmentActivity {
                 locationText = autocompleteView.getText().toString().trim();
                 descriptionText = itemDescription.getText().toString().trim();
                 mItem = new Item(mDate,mStartTime,mEndTime,locationText,descriptionText,mBudget);
-                db.addItem(mItem);
-                Toast.makeText(AddEditItemActivity.this, getResources().getString(R.string.save_item), Toast.LENGTH_SHORT).show();
+                long returnVal = db.addItem(mItem);
+                Toast.makeText(AddEditItemActivity.this, String.valueOf(returnVal), Toast.LENGTH_SHORT).show();
                 AddEditItemActivity.this.setResult(RESULT_OK);
                 finish();
             }

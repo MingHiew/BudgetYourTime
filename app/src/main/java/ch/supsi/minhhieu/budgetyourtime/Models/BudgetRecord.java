@@ -5,10 +5,10 @@ package ch.supsi.minhhieu.budgetyourtime.Models;
  */
 public class BudgetRecord {
 
-    private int id;
+    private long id;
     public long startDate;
     public long endDate;
-    public int budgetID;
+    public long budgetID;
 
 
     public long spent = 0;
@@ -18,9 +18,32 @@ public class BudgetRecord {
     public BudgetRecord() {
     }
 
-    public BudgetRecord(long startDate, long endDate, int budgetID) {
+    public BudgetRecord(long mID, long startDate, long endDate, long budgetID,long spent,long balance) {
+        this.id = mID;
         this.startDate = startDate;
         this.endDate = endDate;
         this.budgetID = budgetID;
+        this.spent = spent;
+        this.balance = balance;
+    }
+
+    public BudgetRecord(long startDate, long endDate, long budgetID, long spent,long balance) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.budgetID = budgetID;
+        this.spent = spent;
+        this.balance = balance;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public BudgetRecord(long startDate, long endDate, long spent, long balance) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.spent = spent;
+
+        this.balance = balance;
     }
 }

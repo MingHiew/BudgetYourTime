@@ -22,11 +22,13 @@ public class RecurUtils {
         WEEKLY(R.string.recur_interval_weekly){
             @Override
             public Period next(long startDate) {
+                long endDate = 0;
                 Calendar c = Calendar.getInstance();
+                c.setFirstDayOfWeek(Calendar.MONDAY);
                 c.setTimeInMillis(startDate);
                 startDate = CalendarUtils.startOfDay(c).getTimeInMillis();
                 c.add(Calendar.DAY_OF_MONTH, 6);
-                long endDate = CalendarUtils.endOfDay(c).getTimeInMillis();
+                endDate = CalendarUtils.endOfDay(c).getTimeInMillis();
                 return new Period(PeriodType.CUSTOM, startDate, endDate);
             }
         },
@@ -35,6 +37,7 @@ public class RecurUtils {
             public Period next(long startDate) {
                 Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(startDate);
+                //c.set(Calendar.DAY_OF_MONTH, 1);
                 startDate = CalendarUtils.startOfDay(c).getTimeInMillis();
                 c.add(Calendar.MONTH, 1);
                 c.add(Calendar.DAY_OF_MONTH, -1);
@@ -105,6 +108,18 @@ public class RecurUtils {
 
         protected Recur(RecurInterval interval, HashMap<String, String> values) {
             this.interval = interval;
+            switch (interval){
+                case WEEKLY:
+                    Calendar c = Calendar.getInstance();
+                    c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                    this.startDate = c.getTimeInMillis();
+                    break;
+                case MONTHLY:
+                    Calendar d = Calendar.getInstance();
+                    d.set(Calendar.DAY_OF_MONTH, 1);
+                    this.startDate = d.getTimeInMillis();
+                    break;
+            }
             this.startDate = getLong(values, "startDate");
             this.period = RecurPeriod.EXACTLY_TIMES;
             this.periodParam = 200;
@@ -112,7 +127,18 @@ public class RecurUtils {
 
         public Recur(RecurInterval interval) {
             this.interval = interval;
-            this.startDate = System.currentTimeMillis();
+            switch (interval){
+                case WEEKLY:
+                    Calendar c = Calendar.getInstance();
+                    c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                    this.startDate = c.getTimeInMillis();
+                    break;
+                case MONTHLY:
+                    Calendar d = Calendar.getInstance();
+                    d.set(Calendar.DAY_OF_MONTH, 1);
+                    this.startDate = d.getTimeInMillis();
+                    break;
+            }
             this.period = RecurPeriod.EXACTLY_TIMES;
             this.periodParam = 200;
         }

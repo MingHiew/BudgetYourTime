@@ -9,7 +9,7 @@ import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils.Recur;
  */
 public class Budget {
 
-    private int id;
+    private long id;
 
     public String name;
     public int amount;
@@ -19,14 +19,20 @@ public class Budget {
     public Budget() {
     }
 
+    public Budget(long id, String mName, int mAmount, String recur) {
+        this.id = id;
+        this.name = mName;
+        this.amount = mAmount;
+        this.recur = recur;
+    }
+
     public Budget(String mName, int mAmount, String recur) {
         this.name = mName;
         this.amount = mAmount;
         this.recur = recur;
     }
 
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 

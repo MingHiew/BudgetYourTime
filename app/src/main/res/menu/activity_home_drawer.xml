@@ -11,6 +11,10 @@
             android:icon="@drawable/ic_budget"
             android:title="Add New Budget" />
         <item
+            android:id="@+id/nav_budget_details"
+            android:icon="@drawable/ic_detail"
+            android:title="To Budget Details" />
+        <item
             android:id="@+id/nav_stats"
             android:icon="@drawable/ic_charts"
             android:title="Statistics" />

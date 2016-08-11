@@ -44,8 +44,8 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = ButterKnife.findById(getActivity(),R.id.my_toolbar);
-        toolbar.setTitle(getString(R.string.title_fragment_overview));
+        //Toolbar toolbar = ButterKnife.findById(getActivity(),R.id.my_toolbar);
+        //toolbar.setTitle(getString(R.string.title_fragment_overview));
         db = DBHelper.getInstance(this.getContext());
 
     }

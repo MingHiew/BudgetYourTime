@@ -2,6 +2,7 @@ package ch.supsi.minhhieu.budgetyourtime.Models;
 
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -9,9 +10,9 @@ import java.util.Calendar;
  */
 public class Item {
 
-    private int id;
+    private long id;
     private String description;
-    private int budget;
+    private long budget;
     private String location;
     public Calendar date;
 
@@ -19,7 +20,7 @@ public class Item {
 
     public Calendar startTime = Calendar.getInstance();
     public Calendar endTime = Calendar.getInstance();
-    private double duration;
+    private long duration;
 
     public Item() {
         startTime.add(Calendar.HOUR_OF_DAY, 1);
@@ -29,7 +30,7 @@ public class Item {
     }
 
 
-    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, double mDuration, int mBudget) {
+    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
         this.date = mDate;
         this.startTime.setTimeInMillis(dateStart);
         this.endTime.setTimeInMillis(dateEnd);
@@ -39,7 +40,18 @@ public class Item {
         this.budget = mBudget;
     }
 
-    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  int mBudget) {
+    public Item(int mId, Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
+        this.id = mId;
+        this.date = mDate;
+        this.startTime.setTimeInMillis(dateStart);
+        this.endTime.setTimeInMillis(dateEnd);
+        this.location = mLocation;
+        this.description = mDescription;
+        this.duration = mDuration;
+        this.budget = mBudget;
+    }
+
+    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  long mBudget) {
         this.date = mDate;
         this.startTime.setTimeInMillis(dateStart);
         this.endTime.setTimeInMillis(dateEnd);
@@ -49,7 +61,7 @@ public class Item {
         this.budget = mBudget;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -65,7 +77,7 @@ public class Item {
         return endTime.getTimeInMillis();
     }
 
-    public int getBudget() {
+    public long getBudget() {
         return budget;
     }
 
@@ -73,7 +85,7 @@ public class Item {
         return location;
     }
 
-    public double getDuration() {
+    public long getDuration() {
         return duration;
     }
 
@@ -81,39 +93,4 @@ public class Item {
         return date;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
     }
-
-    public void setBudget(int mBudget) {
-        this.budget = mBudget;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setDuration(long mStartTime, long mEndTime) {
-        this.duration = mEndTime - mStartTime;
-    }
-
-    public void setStartTime(Calendar startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(Calendar endTime) {
-        this.endTime = endTime;
-    }
-
-    public void setStartTime(long startTimeInMillis) {
-        this.startTime.setTimeInMillis(startTimeInMillis);
-    }
-
-    public void setEndTime(long endTimeInMillis) {
-        this.endTime.setTimeInMillis(endTimeInMillis);
-    }
-
-    public void setDate(Calendar date) {
-        this.date = date;
-    }
-}
