@@ -1,11 +1,12 @@
 package ch.supsi.minhhieu.budgetyourtime.Utils;
 
 import android.content.Context;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
 
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -23,25 +24,37 @@ public class RecurUtils {
             @Override
             public Period next(long startDate) {
                 long endDate = 0;
-                Calendar c = Calendar.getInstance();
-                c.setFirstDayOfWeek(Calendar.MONDAY);
-                c.setTimeInMillis(startDate);
-                startDate = CalendarUtils.startOfDay(c).getTimeInMillis();
-                c.add(Calendar.DAY_OF_MONTH, 6);
-                endDate = CalendarUtils.endOfDay(c).getTimeInMillis();
+                //Calendar c = Calendar.getInstance();
+                //c.setFirstDayOfWeek(Calendar.MONDAY);
+                //c.setTimeInMillis(startDate);
+                //DateTimeZone timeZone = DateTimeZone.getDefault();
+                MutableDateTime dt = new MutableDateTime();
+                dt.setMillis(startDate);
+                //startDate = CalendarUtils.startOfDay(c).getTimeInMillis();
+                //c.add(Calendar.DAY_OF_MONTH, 6);
+                //endDate = CalendarUtils.endOfDay(c).getTimeInMillis();
+                startDate = CalendarUtils.startOfDay(dt).getMillis();
+                dt.addDays(6);
+                endDate = CalendarUtils.endOfDay(dt).getMillis();
                 return new Period(PeriodType.CUSTOM, startDate, endDate);
             }
         },
         MONTHLY(R.string.recur_interval_monthly){
             @Override
             public Period next(long startDate) {
-                Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(startDate);
-                //c.set(Calendar.DAY_OF_MONTH, 1);
-                startDate = CalendarUtils.startOfDay(c).getTimeInMillis();
-                c.add(Calendar.MONTH, 1);
-                c.add(Calendar.DAY_OF_MONTH, -1);
-                long endDate = CalendarUtils.endOfDay(c).getTimeInMillis();
+                //Calendar c = Calendar.getInstance();
+                //c.setTimeInMillis(startDate);
+                //startDate = CalendarUtils.startOfDay(c).getTimeInMillis();
+                //c.add(Calendar.MONTH, 1);
+                //c.add(Calendar.DAY_OF_MONTH, -1);
+                //long endDate = CalendarUtils.endOfDay(c).getTimeInMillis();
+                //DateTimeZone timeZone = DateTimeZone.getDefault();
+                MutableDateTime dt = new MutableDateTime();
+                dt.setMillis(startDate);
+                startDate = CalendarUtils.startOfDay(dt).getMillis();
+                dt.addMonths(1);
+                dt.addDays(-1);
+                long endDate = CalendarUtils.endOfDay(dt).getMillis();
                 return new Period(PeriodType.CUSTOM, startDate, endDate);
             }
         };
@@ -110,14 +123,23 @@ public class RecurUtils {
             this.interval = interval;
             switch (interval){
                 case WEEKLY:
-                    Calendar c = Calendar.getInstance();
-                    c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                    this.startDate = c.getTimeInMillis();
+                    //Calendar c = Calendar.getInstance();
+                    //c.setFirstDayOfWeek(Calendar.MONDAY);
+                    //c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                    //DateTimeZone timeZone = DateTimeZone.getDefault();
+                    MutableDateTime dt = new MutableDateTime();
+                    dt.setDayOfWeek(DateTimeConstants.MONDAY);
+                    //this.startDate = c.getTimeInMillis();
+                    this.startDate = dt.getMillis();
                     break;
                 case MONTHLY:
-                    Calendar d = Calendar.getInstance();
-                    d.set(Calendar.DAY_OF_MONTH, 1);
-                    this.startDate = d.getTimeInMillis();
+                    //Calendar d = Calendar.getInstance();
+                    //d.set(Calendar.DAY_OF_MONTH, 1);
+                    //this.startDate = d.getTimeInMillis();
+                    //DateTimeZone timeZone1 = DateTimeZone.getDefault();
+                    MutableDateTime dt1 = new MutableDateTime();
+                    dt1.setDayOfMonth(1);
+                    this.startDate = dt1.getMillis();
                     break;
             }
             this.startDate = getLong(values, "startDate");
@@ -129,14 +151,22 @@ public class RecurUtils {
             this.interval = interval;
             switch (interval){
                 case WEEKLY:
-                    Calendar c = Calendar.getInstance();
-                    c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                    this.startDate = c.getTimeInMillis();
+                    //Calendar c = Calendar.getInstance();
+                    //c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                    //this.startDate = c.getTimeInMillis();
+                    //DateTimeZone timeZone = DateTimeZone.getDefault();
+                    MutableDateTime dt = new MutableDateTime();
+                    dt.setDayOfWeek(DateTimeConstants.MONDAY);
+                    this.startDate = dt.getMillis();
                     break;
                 case MONTHLY:
-                    Calendar d = Calendar.getInstance();
-                    d.set(Calendar.DAY_OF_MONTH, 1);
-                    this.startDate = d.getTimeInMillis();
+                    //Calendar d = Calendar.getInstance();
+                    //d.set(Calendar.DAY_OF_MONTH, 1);
+                    //this.startDate = d.getTimeInMillis();
+                    //DateTimeZone timeZone1 = DateTimeZone.getDefault();
+                    MutableDateTime dt1 = new MutableDateTime();
+                    dt1.setDayOfMonth(1);
+                    this.startDate = dt1.getMillis();
                     break;
             }
             this.period = RecurPeriod.EXACTLY_TIMES;

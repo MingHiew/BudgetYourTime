@@ -1,8 +1,13 @@
 package ch.supsi.minhhieu.budgetyourtime.Models;
 
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
+
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
+
+import ch.supsi.minhhieu.budgetyourtime.Utils.CalendarUtils;
 
 
 /**
@@ -14,50 +19,68 @@ public class Item {
     private String description;
     private long budget;
     private String location;
-    public Calendar date;
+    public MutableDateTime date;
+    private String startinghour;
+    private String endinghour;
 
-
-
-    public Calendar startTime = Calendar.getInstance();
-    public Calendar endTime = Calendar.getInstance();
+    public MutableDateTime startTime;
+    public MutableDateTime endTime;
     private long duration;
 
     public Item() {
-        startTime.add(Calendar.HOUR_OF_DAY, 1);
-        startTime.set(Calendar.MINUTE, 0);
-        endTime.add(Calendar.HOUR_OF_DAY, 2);
-        endTime.set(Calendar.MINUTE, 0);
+        //startTime.add(Calendar.HOUR_OF_DAY, 1);
+        //startTime.set(Calendar.MINUTE, 0);
+        //endTime.add(Calendar.HOUR_OF_DAY, 2);
+        //endTime.set(Calendar.MINUTE, 0);
     }
 
 
-    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
+    public Item(MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
+        DateTimeZone timeZone = DateTimeZone.getDefault();
+        this.date = new MutableDateTime();
+        this.startTime = new MutableDateTime();
+        this.endTime = new MutableDateTime();
         this.date = mDate;
-        this.startTime.setTimeInMillis(dateStart);
-        this.endTime.setTimeInMillis(dateEnd);
+        this.startTime.setTime(timeZone.convertUTCToLocal(dateStart));
+        this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
+        this.startinghour = startTime.toString();
+        this.endinghour = endTime.toString();
         this.location = mLocation;
         this.description = mDescription;
         this.duration = mDuration;
         this.budget = mBudget;
     }
 
-    public Item(int mId, Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
+    public Item(int mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
         this.id = mId;
+        DateTimeZone timeZone = DateTimeZone.getDefault();
+        this.date = new MutableDateTime();
+        this.startTime = new MutableDateTime();
+        this.endTime = new MutableDateTime();
         this.date = mDate;
-        this.startTime.setTimeInMillis(dateStart);
-        this.endTime.setTimeInMillis(dateEnd);
+        this.startTime.setTime(timeZone.convertUTCToLocal(dateStart));
+        this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
+        this.startinghour = startTime.toString();
+        this.endinghour = endTime.toString();
         this.location = mLocation;
         this.description = mDescription;
         this.duration = mDuration;
         this.budget = mBudget;
     }
 
-    public Item(Calendar mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  long mBudget) {
+    public Item(MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  long mBudget) {
+        DateTimeZone timeZone = DateTimeZone.getDefault();
+        this.date = new MutableDateTime();
+        this.startTime = new MutableDateTime();
+        this.endTime = new MutableDateTime();
         this.date = mDate;
-        this.startTime.setTimeInMillis(dateStart);
-        this.endTime.setTimeInMillis(dateEnd);
+        this.startTime.setTime(timeZone.convertUTCToLocal(dateStart));
+        this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
+        this.startinghour = startTime.toString();
+        this.endinghour = endTime.toString();
         this.location = mLocation;
         this.description = mDescription;
-        this.duration = endTime.getTimeInMillis() - startTime.getTimeInMillis();
+        this.duration = endTime.getMillis() - startTime.getMillis();
         this.budget = mBudget;
     }
 
@@ -70,11 +93,11 @@ public class Item {
     }
 
     public long getStartTime() {
-        return startTime.getTimeInMillis();
+        return startTime.getMillis();
     }
 
     public long getEndTime() {
-        return endTime.getTimeInMillis();
+        return endTime.getMillis();
     }
 
     public long getBudget() {
@@ -89,8 +112,15 @@ public class Item {
         return duration;
     }
 
-    public Calendar getDate() {
+    public MutableDateTime getDate() {
         return date;
     }
 
+    public String getStartinghour() {
+        return startinghour;
     }
+
+    public String getEndinghour() {
+        return endinghour;
+    }
+}

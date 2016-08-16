@@ -16,7 +16,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -30,20 +30,22 @@ dependencies {
 
     //Google Play Services
     //GSON library
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.android.support:design:23.2.1'
+    //Butterknife
+    //Circleimage
+    //ProgressView
+
+
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    compile 'com.android.support:support-v4:23.0.0'
+    compile 'com.android.support:support-v4:23.4.0'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.droidparts:droidparts:2.9.6'
-    compile 'com.android.support:multidex:1.0.0'
-    compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.android.gms:play-services:9.2.1'
     compile 'com.google.code.gson:gson:2.3.1'
-    //Butterknife
     compile 'com.jakewharton:butterknife:8.2.1'
-    //Circleimage
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    //ProgressView
     compile 'com.daasuu:animateHorizontalProgressBar:0.2.4'
-
+    compile 'joda-time:joda-time:2.9.4'
 }

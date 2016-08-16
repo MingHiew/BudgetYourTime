@@ -2,7 +2,6 @@ package ch.supsi.minhhieu.budgetyourtime.Utils;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import ch.supsi.minhhieu.budgetyourtime.R;
 
@@ -10,7 +9,7 @@ import ch.supsi.minhhieu.budgetyourtime.R;
  * Created by acer on 09/08/2016.
  */
 public enum PeriodType implements LocalizableEnum {
-    TODAY(R.string.period_today, true, true) {
+    /*TODAY(R.string.period_today, true, true) {
         @Override
         public Period calculatePeriod(long refTime) {
             Calendar c = Calendar.getInstance();
@@ -173,7 +172,7 @@ public enum PeriodType implements LocalizableEnum {
             long end = CalendarUtils.endOfDay(c).getTimeInMillis();
             return new Period(PeriodType.NEXT_3_MONTHS, start, end);
         }
-    },
+    },*/
     CUSTOM(R.string.period_custom, true, true) {
         @Override
         public Period calculatePeriod(long refTime) {
@@ -217,7 +216,7 @@ public enum PeriodType implements LocalizableEnum {
 
     public abstract Period calculatePeriod(long refTime);
 
-    public Period calculatePeriod() {
+    /*public Period calculatePeriod() {
         return calculatePeriod(System.currentTimeMillis());
-    }
+    }*/
 }

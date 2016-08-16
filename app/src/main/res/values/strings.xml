@@ -4,6 +4,7 @@
     <string name="title_activity_add_edit_budget">AddEditBudgetActivity</string>
     <string name="title_activity_add_edit_item">AddEditItemActivity</string>
     <string name="budget_types">Budget Types</string>
+    <string name="budget_type">Budget Type</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -41,9 +42,18 @@
 
     <!-- Budget -->
     <string name="save_budget">Budget successfully created!</string>
+
+    <!-- Item -->
     <string name="save_item">Item successfully created!</string>
+    <string name="invalid_date">Invalid date specified. please try again!</string>
+    <string name="invalid_time">Please specify valid time range!</string>
 
     <!-- Page titles -->
     <string name="title_fragment_overview">Overview</string>
 
+    <!-- Budget Type -->
+    <string-array name="budget_type">
+        <item>Weekly Budgets</item>
+        <item>Monthly Budgets</item>
+    </string-array>
 </resources>

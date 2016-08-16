@@ -18,7 +18,7 @@ public class CustomTimePickerDialog extends TimePickerDialog {
 
     public CustomTimePickerDialog(Context context, int themeDeviceDefaultLight, OnTimeSetListener callBack,
                                   int hourOfDay, int minute, boolean is24HourView) {
-        super(context, TimePickerDialog.THEME_HOLO_LIGHT, callBack, hourOfDay, minute / TIME_PICKER_INTERVAL,
+        super(context, callBack, hourOfDay, minute / TIME_PICKER_INTERVAL,
                 is24HourView);
         this.callback = callBack;
     }

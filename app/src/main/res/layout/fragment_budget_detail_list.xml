@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ch.supsi.minhhieu.budgetyourtime.BudgetDetailListFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:orientation="horizontal"
+        android:background="@color/blue_dark">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_chevron_left_white_18dp"
+            android:layout_gravity="left"/>
+        <TextView
+            android:id="@+id/budget_detail_startdate"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:textSize="16dp"
+            android:text="Aug 15"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_gravity="left"/>
+        <TextView
+            android:id="@+id/budget_detail_enddate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Aug 21"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:layout_gravity="end" />
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_chevron_right_white_18dp"
+            android:layout_gravity="right"/>
+    </LinearLayout>
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/budget_detail_list">
+    </ListView>
+</LinearLayout>

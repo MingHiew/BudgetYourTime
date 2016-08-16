@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ch.supsi.minhhieu.budgetyourtime.MainActivity">
+    <item android:id="@+id/action_budget_type"
+        android:icon="@drawable/ic_event"
+        android:title="@string/budget_type"
+        app:showAsAction="ifRoom"/>
+</menu>

@@ -1,6 +1,7 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -9,7 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
+import android.support.v4.app.DialogFragment;
 import android.widget.EditText;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -25,7 +26,9 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-import java.util.Calendar;
+
+import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
@@ -52,13 +55,16 @@ public class AddEditItemActivity extends FragmentActivity {
     @BindView(R.id.item_description)
     EditText itemDescription;
 
-    public static final int ADD_NEW_ITEM = 1;
-    public static final int EDIT_ITEM = 2;
+    public static final int ADD_NEW_ITEM = 3;
+    public static final int EDIT_ITEM = 4;
+    private static MutableDateTime mDate = new MutableDateTime();
+
     DBHelper db;
+
+    private DialogFragment timeFragment;
     private int mBudget, itemID,typeOfDialog;
     private long mStartTime, mEndTime;
-    private String locationText, descriptionText,startTimeText, endTimeText, dateText;
-    private Calendar mDate = Calendar.getInstance();
+    private String locationText, descriptionText;
     private Item mItem = new Item();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -79,7 +85,7 @@ public class AddEditItemActivity extends FragmentActivity {
         typeOfDialog = intent.getIntExtra("typeOfDialog",2);
         itemID = (int) intent.getLongExtra("itemId", 1);
         if (typeOfDialog == ADD_NEW_ITEM) {
-            itemActivityTitle.setText("Add New Activity");
+            itemActivityTitle.setText("Add New Expense");
             presetAddNewActivityViews();
         }
         setupViewsBehaviours();
@@ -89,7 +95,7 @@ public class AddEditItemActivity extends FragmentActivity {
     }
     private void presetAddNewActivityViews(){
         if (activityDate == null) return;
-        final long today = CalendarUtils.today();
+        long today = MutableDateTime.now().getMillis();
         activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, today));
         mStartTime = CalendarUtils.getNearestHourAndMinutes();
         startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this, mStartTime));
@@ -150,42 +156,36 @@ public class AddEditItemActivity extends FragmentActivity {
 
     }
 
-
     private void showDatePicker() {
-        final Calendar date = Calendar.getInstance();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            new DatePickerDialog(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                    date.set(year, monthOfYear, dayOfMonth);
-                    activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, date.getTimeInMillis()));
-                    mDate = date;
-                }
-            }, date.get(Calendar.YEAR),
-                    date.get(Calendar.MONTH),
-                    date.get(Calendar.DAY_OF_MONTH))
-                    .show();
-        }
+        timeFragment = new DatePickerFragment();
+        timeFragment.show(getSupportFragmentManager(), "timePicker");
+
     }
 
     private void showTimePicker(final boolean start) {
-        final Calendar date = Calendar.getInstance();
-
-        new CustomTimePickerDialog(this, AlertDialog.THEME_TRADITIONAL, new TimePickerDialog.OnTimeSetListener() {
+        //final Calendar date = Calendar.getInstance();
+        //final DateTimeZone timeZone = DateTimeZone.getDefault();
+        final MutableDateTime dt = new MutableDateTime();
+        new CustomTimePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                date.set(Calendar.MINUTE, minute);
+                //date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                //date.set(Calendar.MINUTE, minute);
+                dt.setHourOfDay(hourOfDay);
+                dt.setMinuteOfHour(minute);
                 if (start) {
-                    mStartTime = date.getTimeInMillis();
+                    //mStartTime = date.getTimeInMillis();
+                    mStartTime = dt.getMillis();
                     startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this, mStartTime));
                 } else {
-                    mEndTime = date.getTimeInMillis();
+                    //mEndTime = date.getTimeInMillis();
+                    mEndTime = dt.getMillis();
                     endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,
                             mEndTime));
                 }
             }
-        }, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), false).show();
+        }, dt.getHourOfDay(),dt.getMinuteOfHour(),false).show();
+        //date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), false).show();
     }
 
     private void setOnclickSaveButton() {
@@ -194,13 +194,28 @@ public class AddEditItemActivity extends FragmentActivity {
             public void onClick(View v) {
                 locationText = autocompleteView.getText().toString().trim();
                 descriptionText = itemDescription.getText().toString().trim();
-                mItem = new Item(mDate,mStartTime,mEndTime,locationText,descriptionText,mBudget);
-                long returnVal = db.addItem(mItem);
-                Toast.makeText(AddEditItemActivity.this, String.valueOf(returnVal), Toast.LENGTH_SHORT).show();
-                AddEditItemActivity.this.setResult(RESULT_OK);
-                finish();
+                Boolean validTime = ValidateTime(mStartTime,mEndTime);
+                if (validTime == false){
+                    Toast.makeText(AddEditItemActivity.this, R.string.invalid_time, Toast.LENGTH_SHORT).show();
+                } else{
+                    mItem = new Item(mDate,mStartTime,mEndTime,locationText,descriptionText,mBudget);
+                    boolean returnval = db.addItem(mItem);
+                    if (returnval == true){
+                        AddEditItemActivity.this.setResult(RESULT_OK);
+                        Toast.makeText(AddEditItemActivity.this, R.string.save_item, Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(AddEditItemActivity.this, R.string.invalid_date, Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
+    }
+
+    private boolean ValidateTime (long startTime, long endTime){
+        if (startTime < endTime){
+            return true;
+        } else {return false;}
     }
 
     @Override
@@ -241,5 +256,37 @@ public class AddEditItemActivity extends FragmentActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+
+    public void updateDate(long dt){
+        activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, dt));
+
+    }
+
+    public class DatePickerFragment extends DialogFragment implements
+            DatePickerDialog.OnDateSetListener {
+
+        public DatePickerFragment() {
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            DateTimeZone timeZone = DateTimeZone.getDefault();
+            final MutableDateTime dt = new MutableDateTime(timeZone);
+            int year = dt.getYear();
+            int month = dt.getMonthOfYear();
+            int day = dt.getDayOfMonth();
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month -1, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            mDate.setYear(year);
+            mDate.setMonthOfYear(month+1);
+            mDate.setDayOfMonth(day);
+            updateDate(mDate.getMillis());
+        }
     }
 }

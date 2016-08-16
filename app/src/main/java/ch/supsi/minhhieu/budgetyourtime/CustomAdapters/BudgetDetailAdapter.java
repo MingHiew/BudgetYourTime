@@ -1,9 +1,11 @@
 package ch.supsi.minhhieu.budgetyourtime.CustomAdapters;
 
+/**
+ * Created by acer on 14/08/2016.
+ */
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.database.Cursor;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -11,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.BaseAdapter;
-import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,25 +25,27 @@ import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
 import ch.supsi.minhhieu.budgetyourtime.Models.BudgetRecord;
 import ch.supsi.minhhieu.budgetyourtime.R;
 import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils;
-import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils.RecurInterval;
+
 /**
  * Created by acer on 03/08/2016.
  */
-public class BudgetAdapter extends BaseAdapter{
+public class BudgetDetailAdapter extends BaseAdapter {
 
     private Context context;
     private List<Budget> list;
     private LayoutInflater inflater;
     private DBHelper db;
-
+    private long startDate, endDate;
     private final StringBuilder sb = new StringBuilder();
 
 
-    public BudgetAdapter(Context context, List<Budget> list, DBHelper db) {
+    public BudgetDetailAdapter(Context context, List<Budget> list, DBHelper db, long startDate, long endDate) {
         this.context = context;
         this.list = list;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.db = db;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class BudgetAdapter extends BaseAdapter{
         View view = convertView;
 
         Budget b = list.get(position);
-        BudgetRecord latestBR = db.getLatestInterval(b);
+        BudgetRecord latestBR = db.getBudgetRecordByInterval(b,startDate,endDate);
         if (view == null) {
             view = inflater.inflate(R.layout.budget_list_row,null);
             OverviewViewHolder viewHolder = new OverviewViewHolder(view);
@@ -81,7 +83,7 @@ public class BudgetAdapter extends BaseAdapter{
 
         OverviewViewHolder viewHolder = (OverviewViewHolder) view.getTag();
         viewHolder.budgetListTitle.setText(b.name);
-        RecurInterval interval = b.getRecur().interval;
+        RecurUtils.RecurInterval interval = b.getRecur().interval;
         switch (interval){
             case WEEKLY:
                 viewHolder.budgetListAdmount.setText(String.valueOf(b.amount)+" hours/week");
@@ -106,21 +108,10 @@ public class BudgetAdapter extends BaseAdapter{
         } else {
             viewHolder.budgetRemained.setText("Remaining Balance: "+String.valueOf(latestBR.balance)+" hours");
         }
-        if(latestBR.spent <= b.amount) {
-            viewHolder.budgetStatusBar.setMax(b.amount);
-            viewHolder.budgetStatusBar.setProgress((int) latestBR.spent);
-        } else if (latestBR.spent > b.amount){
-            viewHolder.budgetStatusBar.setBackgroundColor(this.context.getResources().getColor(R.color.red));
-            viewHolder.budgetStatusBar.setMax((int) latestBR.spent);
-            viewHolder.budgetStatusBar.setProgress((int) b.amount);
 
-        }
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ObjectAnimator animation = ObjectAnimator.ofInt(viewHolder.budgetStatusBar, "progress",0,(int) (Math.abs(latestBR.spent) - 1));
-            animation.setDuration(Math.min(1200,(latestBR.spent * 100) / Math.abs(b.amount))*12); // max 1,2 seconds
-            animation.setInterpolator(new DecelerateInterpolator());
-            animation.start();
-        }*/
+        viewHolder.budgetStatusBar.setMax(b.amount);
+        viewHolder.budgetStatusBar.setProgress((int)latestBR.spent);
+
         return view;
     }
 

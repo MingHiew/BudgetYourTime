@@ -26,11 +26,12 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+    @BindView(R.id.add_new_activity)
+    FloatingActionButton fab_new_activity;
 
     private static final String TAG = "HomeActivity";
     DBHelper db;
     Toolbar toolbar = null;
-    TextView mUserName, mUserEmail;
     public static final int OVERVIEW_FRAGMENT = 1;
 
     @Override
@@ -40,7 +41,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         db = DBHelper.getInstance(this);
-        FloatingActionButton fab_new_activity = (FloatingActionButton) findViewById(R.id.add_new_activity);
+        ButterKnife.bind(this);
         fab_new_activity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,8 +64,7 @@ public class HomeActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        if (savedInstanceState == null) {
+        if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, OverviewFragment.newInstance())
                     .commit();
@@ -85,7 +84,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
+        getMenuInflater().inflate(R.menu.add_budget_button, menu);
         return true;
     }
 
@@ -97,8 +96,8 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_add_budget) {
+            createNewBudget();
         }
 
         return super.onOptionsItemSelected(item);
@@ -121,8 +120,13 @@ public class HomeActivity extends AppCompatActivity
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
             fragmentTransaction.commit();
-        } else if (id == R.id.nav_new_budget) {
-            createNewBudget();
+            fab_new_activity.show();
+        } else if (id == R.id.nav_budget_details) {
+            BudgetDetailPagerFragment budgetDetailFragment = new BudgetDetailPagerFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container,budgetDetailFragment);
+            fragmentTransaction.commit();
+            fab_new_activity.hide();
         } else if (id == R.id.nav_stats) {
 
         }
@@ -135,14 +139,34 @@ public class HomeActivity extends AppCompatActivity
     private void createNewBudget() {
         Intent budgetIntent = new Intent(HomeActivity.this,AddEditBudgetActivity.class);
         budgetIntent.putExtra("typeOfDialog",AddEditBudgetActivity.ADD_NEW_BUDGET);
-        startActivity(budgetIntent);
+        startActivityForResult(budgetIntent,AddEditBudgetActivity.ADD_NEW_BUDGET);
     }
 
     private void createNewItem(){
         Intent itemIntent = new Intent(HomeActivity.this, AddEditItemActivity.class);
         itemIntent.putExtra("typeOfDialog",AddEditItemActivity.ADD_NEW_ITEM);
-        startActivity(itemIntent);
+        startActivityForResult(itemIntent,AddEditItemActivity.ADD_NEW_ITEM);
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case AddEditBudgetActivity.ADD_NEW_BUDGET:
+                OverviewFragment overviewFragment = new OverviewFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
+                fragmentTransaction.commit();
+                break;
+            case AddEditItemActivity.ADD_NEW_ITEM:
+                OverviewFragment overviewFragment1 = new OverviewFragment();
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container,overviewFragment1);
+                fragmentTransaction.commit();
+                break;
+
+        }
+
+    }
 }
