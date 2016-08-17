@@ -14,7 +14,6 @@ public class Budget {
     public String name;
     public int amount;
     public String recur;
-    public String notes;
 
     public Budget() {
     }

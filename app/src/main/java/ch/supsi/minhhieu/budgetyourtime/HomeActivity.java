@@ -84,7 +84,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_budget_button, menu);
+        super.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -137,23 +137,21 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void createNewBudget() {
-        Intent budgetIntent = new Intent(HomeActivity.this,AddEditBudgetActivity.class);
-        budgetIntent.putExtra("typeOfDialog",AddEditBudgetActivity.ADD_NEW_BUDGET);
-        startActivityForResult(budgetIntent,AddEditBudgetActivity.ADD_NEW_BUDGET);
+        Intent budgetIntent = new Intent(HomeActivity.this,AddBudgetActivity.class);
+        startActivityForResult(budgetIntent,AddBudgetActivity.ADD_NEW_BUDGET);
     }
 
     private void createNewItem(){
         Intent itemIntent = new Intent(HomeActivity.this, AddEditItemActivity.class);
         itemIntent.putExtra("typeOfDialog",AddEditItemActivity.ADD_NEW_ITEM);
         startActivityForResult(itemIntent,AddEditItemActivity.ADD_NEW_ITEM);
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-            case AddEditBudgetActivity.ADD_NEW_BUDGET:
+            case AddBudgetActivity.ADD_NEW_BUDGET:
                 OverviewFragment overviewFragment = new OverviewFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
@@ -165,8 +163,15 @@ public class HomeActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.fragment_container,overviewFragment1);
                 fragmentTransaction.commit();
                 break;
-
+            case AddEditItemActivity.EDIT_ITEM:
+                OverviewFragment overviewFragment2 = new OverviewFragment();
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container,overviewFragment2);
+                fragmentTransaction.commit();
+                break;
         }
 
     }
+
+
 }

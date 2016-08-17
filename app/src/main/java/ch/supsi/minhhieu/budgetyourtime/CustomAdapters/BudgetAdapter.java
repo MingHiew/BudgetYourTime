@@ -62,11 +62,6 @@ public class BudgetAdapter extends BaseAdapter{
     }
 
 
-    public void refresh(List<Budget> list) {
-        this.list = list;
-        notifyDataSetChanged();
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -112,15 +107,10 @@ public class BudgetAdapter extends BaseAdapter{
         } else if (latestBR.spent > b.amount){
             viewHolder.budgetStatusBar.setBackgroundColor(this.context.getResources().getColor(R.color.red));
             viewHolder.budgetStatusBar.setMax((int) latestBR.spent);
-            viewHolder.budgetStatusBar.setProgress((int) b.amount);
+            viewHolder.budgetStatusBar.setProgress(b.amount);
 
         }
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ObjectAnimator animation = ObjectAnimator.ofInt(viewHolder.budgetStatusBar, "progress",0,(int) (Math.abs(latestBR.spent) - 1));
-            animation.setDuration(Math.min(1200,(latestBR.spent * 100) / Math.abs(b.amount))*12); // max 1,2 seconds
-            animation.setInterpolator(new DecelerateInterpolator());
-            animation.start();
-        }*/
+
         return view;
     }
 

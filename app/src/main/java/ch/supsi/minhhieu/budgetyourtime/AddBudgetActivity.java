@@ -1,12 +1,11 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,6 +15,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
@@ -24,8 +25,9 @@ import ch.supsi.minhhieu.budgetyourtime.Utils.LocalizableEnum;
 import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils;
 import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils.Recur;
 import ch.supsi.minhhieu.budgetyourtime.Utils.RecurUtils.RecurInterval;
+import ch.supsi.minhhieu.budgetyourtime.Utils.Utils;
 
-public class AddEditBudgetActivity extends Activity {
+public class AddBudgetActivity extends Activity {
 
     @BindView(R.id.budget_name)
     EditText budgetName;
@@ -42,8 +44,9 @@ public class AddEditBudgetActivity extends Activity {
     public static final int EDIT_BUDGET = 2;
     DBHelper db;
 
-    private int budgetID, typeOfDialog;
     private String nameText, typeText, amountText;
+    private ProgressDialog loadingSpinner;
+
     private String LOG;
     private Budget budget = new Budget();
     /**
@@ -56,18 +59,10 @@ public class AddEditBudgetActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_add_edit_budget);
+        setContentView(R.layout.activity_add_budget);
         ButterKnife.bind(this);
         db = DBHelper.getInstance(this);
-
-        Intent intent = getIntent();
-        typeOfDialog = intent.getIntExtra("typeOfDialog",2);
-        budgetID = (int) intent.getLongExtra("budgetID",1);
-        if(typeOfDialog == ADD_NEW_BUDGET){
-            addEditBudgetTitle.setText("Add New Budget");
-        } else if (typeOfDialog == EDIT_BUDGET){
-            addEditBudgetTitle.setText("Edit Budget");
-        }
+        addEditBudgetTitle.setText("Add New Budget");
         addSpinnerItems(budgetType, new RecurInterval[]{RecurInterval.WEEKLY, RecurInterval.MONTHLY});
         setOnclickSave();
 
@@ -118,23 +113,50 @@ public class AddEditBudgetActivity extends Activity {
                 Recur r = RecurUtils.createRecur(interval);
                 typeText = r.toString();
                 if(amountText.equals("")){
-                    Toast.makeText(AddEditBudgetActivity.this, getResources().getString(R.string.error_edit_amount), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddBudgetActivity.this, getResources().getString(R.string.error_edit_amount), Toast.LENGTH_SHORT).show();
                 } else {
-                    switch (typeOfDialog) {
-                        case ADD_NEW_BUDGET:
-                            budget = new Budget(nameText,Integer.parseInt(amountText),typeText);
-                            db.addNewBudget(budget);
-                            Toast.makeText(AddEditBudgetActivity.this, getResources().getString(R.string.save_budget), Toast.LENGTH_SHORT).show();
-                            break;
-
-                        case EDIT_BUDGET:
-                            break;
-                    }
+                    loadingSpinner = new ProgressDialog(AddBudgetActivity.this);
+                    loadingSpinner.setMessage("Creating Budget...");
+                    loadingSpinner.show();
+                    StringBuilder sb1 = new StringBuilder();
+                    StringBuilder sb2 = new StringBuilder();
+                    StringBuilder sb3 = new StringBuilder();
+                    sb1.append("name:").append(nameText);
+                    sb2.append("amount:").append(amountText);
+                    sb3.append("type:").append(typeText);
+                    CreateBudgetAsyncTask task = new CreateBudgetAsyncTask();
+                    task.execute(sb1.toString(),sb2.toString(),sb3.toString());
                 }
-                AddEditBudgetActivity.this.setResult(RESULT_OK);
-                finish();
             }
         });
+    }
+
+    public class CreateBudgetAsyncTask extends AsyncTask<String, Void, Void>{
+
+        @Override
+        protected Void doInBackground(String... params) {
+            HashMap<String, String> budgetValueMap = Utils.toMap1(params);
+            budget = new Budget(budgetValueMap.get("name")
+                                ,Integer.parseInt(budgetValueMap.get("amount"))
+                                ,budgetValueMap.get("type"));
+            db.addNewBudget(budget);
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Toast.makeText(AddBudgetActivity.this, getResources().getString(R.string.save_budget), Toast.LENGTH_SHORT).show();
+            AddBudgetActivity.this.setResult(RESULT_OK);
+            finish();
+        }
     }
 
 }

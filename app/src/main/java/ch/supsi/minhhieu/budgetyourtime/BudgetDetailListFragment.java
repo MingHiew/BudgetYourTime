@@ -8,6 +8,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BudgetDetailListFragment extends Fragment {
+public class BudgetDetailListFragment extends Fragment implements BudgetActions {
 
     @BindView(R.id.budget_detail_startdate)
     TextView budgetDetailStartDate;
@@ -36,6 +37,8 @@ public class BudgetDetailListFragment extends Fragment {
     private long endDate;
     private DBHelper db;
     private BudgetDetailAdapter budgetDetailAdapter;
+    private Budget budget = new Budget();
+
 
     private static final String KEY_POSITION="position";
 
@@ -62,13 +65,32 @@ public class BudgetDetailListFragment extends Fragment {
         ButterKnife.bind(this,view);
         budgetDetailStartDate.setText(DateUtils.formatDateTime(getContext(), startDate, DateUtils.FORMAT_SHOW_DATE));
         budgetDetailEndDate.setText(DateUtils.formatDateTime(getContext(), endDate, DateUtils.FORMAT_SHOW_DATE));
-        List<Budget> list = db.getBudgetListByPeriod(startDate,endDate);
+        final List<Budget> list = db.getBudgetListByPeriod(startDate,endDate);
         budgetDetailAdapter = new BudgetDetailAdapter(getActivity(),list,db, startDate, endDate);
         budgetDetailList.setAdapter(budgetDetailAdapter);
-
+        budgetDetailList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle = new Bundle();
+                budget = list.get(position);
+                bundle.putString("budgetName",budget.name);
+                bundle.putLong("budgetID",budget.getId());
+                openItemListFragment(bundle);
+            }
+        });
         return view;
     }
 
 
 
+
+    @Override
+    public void openItemListFragment(Bundle args) {
+        ItemDetailListFragment newFragment = new ItemDetailListFragment();
+        newFragment.setArguments(args);
+        android.support.v4.app.FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container,newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 }

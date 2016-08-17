@@ -20,9 +20,6 @@ public class Item {
     private long budget;
     private String location;
     public MutableDateTime date;
-    private String startinghour;
-    private String endinghour;
-
     public MutableDateTime startTime;
     public MutableDateTime endTime;
     private long duration;
@@ -35,7 +32,7 @@ public class Item {
     }
 
 
-    public Item(MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
+    public Item(MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mBudget) {
         DateTimeZone timeZone = DateTimeZone.getDefault();
         this.date = new MutableDateTime();
         this.startTime = new MutableDateTime();
@@ -43,15 +40,13 @@ public class Item {
         this.date = mDate;
         this.startTime.setTime(timeZone.convertUTCToLocal(dateStart));
         this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
-        this.startinghour = startTime.toString();
-        this.endinghour = endTime.toString();
         this.location = mLocation;
         this.description = mDescription;
-        this.duration = mDuration;
+        this.duration = TimeUnit.MILLISECONDS.toHours(startTime.getMillis()) - TimeUnit.MILLISECONDS.toHours(endTime.getMillis());
         this.budget = mBudget;
     }
 
-    public Item(int mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mDuration, long mBudget) {
+    public Item(long mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mBudget) {
         this.id = mId;
         DateTimeZone timeZone = DateTimeZone.getDefault();
         this.date = new MutableDateTime();
@@ -60,15 +55,14 @@ public class Item {
         this.date = mDate;
         this.startTime.setTime(timeZone.convertUTCToLocal(dateStart));
         this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
-        this.startinghour = startTime.toString();
-        this.endinghour = endTime.toString();
         this.location = mLocation;
         this.description = mDescription;
-        this.duration = mDuration;
+        this.duration = TimeUnit.MILLISECONDS.toHours(startTime.getMillis()) - TimeUnit.MILLISECONDS.toHours(endTime.getMillis());
         this.budget = mBudget;
     }
 
-    public Item(MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription,  long mBudget) {
+    public Item(long mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription,long duration, long mBudget) {
+        this.id = mId;
         DateTimeZone timeZone = DateTimeZone.getDefault();
         this.date = new MutableDateTime();
         this.startTime = new MutableDateTime();
@@ -76,11 +70,9 @@ public class Item {
         this.date = mDate;
         this.startTime.setTime(timeZone.convertUTCToLocal(dateStart));
         this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
-        this.startinghour = startTime.toString();
-        this.endinghour = endTime.toString();
         this.location = mLocation;
         this.description = mDescription;
-        this.duration = endTime.getMillis() - startTime.getMillis();
+        this.duration = duration;
         this.budget = mBudget;
     }
 
@@ -116,11 +108,4 @@ public class Item {
         return date;
     }
 
-    public String getStartinghour() {
-        return startinghour;
-    }
-
-    public String getEndinghour() {
-        return endinghour;
-    }
 }

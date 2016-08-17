@@ -29,6 +29,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
+
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
@@ -83,25 +86,34 @@ public class AddEditItemActivity extends FragmentActivity {
 
         db = DBHelper.getInstance(this);
         typeOfDialog = intent.getIntExtra("typeOfDialog",2);
-        itemID = (int) intent.getLongExtra("itemId", 1);
-        if (typeOfDialog == ADD_NEW_ITEM) {
-            itemActivityTitle.setText("Add New Expense");
-            presetAddNewActivityViews();
-        }
+        itemID = (int) intent.getLongExtra("itemID", 0);
+        presetAddNewActivityViews();
         setupViewsBehaviours();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
     private void presetAddNewActivityViews(){
-        if (activityDate == null) return;
-        long today = MutableDateTime.now().getMillis();
-        activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, today));
-        mStartTime = CalendarUtils.getNearestHourAndMinutes();
-        startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this, mStartTime));
-        mEndTime = CalendarUtils.getNearestHourAndMinutes()+3600000;
-        endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,mEndTime));
-        //autocompleteView.setAdapter(new PlacesAutoCompleteAdapter(AddEditItemActivity.this, R.layout.location_autocomplete));
+        if(typeOfDialog == ADD_NEW_ITEM){
+            itemActivityTitle.setText("Add New Expense");
+            if (activityDate == null) return;
+            long today = MutableDateTime.now().getMillis();
+            activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, today));
+            mStartTime = CalendarUtils.getNearestHourAndMinutes();
+            startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this, mStartTime));
+            mEndTime = CalendarUtils.getNearestHourAndMinutes()+3600000;
+            endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,mEndTime));
+        } else if(typeOfDialog == EDIT_ITEM){
+            itemActivityTitle.setText("Edit Expense");
+            mItem = db.getItem(itemID);
+            activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this,mItem.getDate().getMillis()));
+            mStartTime = mItem.getStartTime();
+            startTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,mStartTime));
+            mEndTime = mItem.getEndTime();
+            endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,mEndTime));
+            autocompleteView.setText(mItem.getLocation());
+            itemDescription.setText(mItem.getDescription());
+        }
 
     }
     private void setupViewsBehaviours() {
@@ -190,6 +202,7 @@ public class AddEditItemActivity extends FragmentActivity {
 
     private void setOnclickSaveButton() {
         saveItem.setOnClickListener(new View.OnClickListener() {
+            boolean returnval = false;
             @Override
             public void onClick(View v) {
                 locationText = autocompleteView.getText().toString().trim();
@@ -198,14 +211,25 @@ public class AddEditItemActivity extends FragmentActivity {
                 if (validTime == false){
                     Toast.makeText(AddEditItemActivity.this, R.string.invalid_time, Toast.LENGTH_SHORT).show();
                 } else{
-                    mItem = new Item(mDate,mStartTime,mEndTime,locationText,descriptionText,mBudget);
-                    boolean returnval = db.addItem(mItem);
-                    if (returnval == true){
-                        AddEditItemActivity.this.setResult(RESULT_OK);
-                        Toast.makeText(AddEditItemActivity.this, R.string.save_item, Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(AddEditItemActivity.this, R.string.invalid_date, Toast.LENGTH_SHORT).show();
+                    if(typeOfDialog == ADD_NEW_ITEM){
+                        mItem = new Item(mDate,mStartTime,mEndTime,locationText,descriptionText,mBudget);
+                        returnval = db.addItem(mItem);
+                        if (returnval == true){
+                            AddEditItemActivity.this.setResult(RESULT_OK);
+                            Toast.makeText(AddEditItemActivity.this, R.string.create_item, Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(AddEditItemActivity.this, R.string.invalid_date, Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (typeOfDialog == EDIT_ITEM){
+                        long duration = mEndTime - mStartTime;
+                        mItem = new Item(itemID,mDate,mStartTime,mEndTime,locationText,descriptionText,mBudget);
+                        returnval = db.editItem(mItem);
+                        if (returnval == true){
+                            AddEditItemActivity.this.setResult(RESULT_OK);
+                            Toast.makeText(AddEditItemActivity.this, R.string.save_item, Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
                     }
                 }
             }
@@ -213,7 +237,7 @@ public class AddEditItemActivity extends FragmentActivity {
     }
 
     private boolean ValidateTime (long startTime, long endTime){
-        if (startTime < endTime){
+        if (TimeUnit.MILLISECONDS.toHours(startTime) < TimeUnit.MILLISECONDS.toHours(endTime)){
             return true;
         } else {return false;}
     }
@@ -256,6 +280,7 @@ public class AddEditItemActivity extends FragmentActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+
     }
 
     public void updateDate(long dt){

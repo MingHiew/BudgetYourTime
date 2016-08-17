@@ -232,7 +232,7 @@ public class RecurUtils {
     public static Recur createFromExtraString(String extra) {
         String[] a = extra.split(",");
         RecurInterval interval = RecurInterval.valueOf(a[0]);
-        HashMap<String, String> values = toMap(a);
+        HashMap<String, String> values = Utils.toMap(a);
         switch (interval) {
             case WEEKLY:
                 return new Weekly(values);
@@ -253,16 +253,7 @@ public class RecurUtils {
         return null;
     }
 
-    private static HashMap<String, String> toMap(String[] a) {
-        HashMap<String, String> map = new HashMap<>();
-        for (String s : a) {
-            String[] kv = s.split("=");
-            if (kv.length > 1) {
-                map.put(kv[0], kv[1]);
-            }
-        }
-        return map;
-    }
+
 
     private static long getLong(HashMap<String, String> values, String string) {
         return Long.parseLong(values.get(string));

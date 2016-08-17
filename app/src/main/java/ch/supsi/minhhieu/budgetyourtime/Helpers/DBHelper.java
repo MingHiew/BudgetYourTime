@@ -56,8 +56,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public final static String KEY_DATE = "date";
     public final static String KEY_STARTTIME = "starttime";
     public final static String KEY_ENDTIME = "endtime";
-    public final static String KEY_STARTINGHOUR = "startinghour";
-    public final static String KEY_ENDINGHOUR = "endinghour";
     public final static String KEY_LOCATION = "location";
     public final static String KEY_IDESCRIPTION = "description";
     public final static String KEY_DURATION = "duration";
@@ -66,8 +64,6 @@ public class DBHelper extends SQLiteOpenHelper {
             + KEY_DATE + " DATE,"
             + KEY_STARTTIME + " DATETIME,"
             + KEY_ENDTIME + " DATETIME,"
-            + KEY_STARTINGHOUR + " TEXT,"
-            + KEY_ENDINGHOUR + " TEXT,"
             + KEY_LOCATION + " TEXT,"
             + KEY_IDESCRIPTION + " TEXT,"
             + KEY_DURATION + " NUMERIC,"
@@ -218,9 +214,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public BudgetRecord getLatestInterval(Budget b){
         SQLiteDatabase db = this.getReadableDatabase();
-        //Calendar cal = Calendar.getInstance();
-        //long current = cal.getTimeInMillis();
-        //DateTimeZone timeZone = DateTimeZone.getDefault();
         MutableDateTime dt = new MutableDateTime();
         long current = dt.getMillis();
         long id = b.getId();
@@ -237,9 +230,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Period> getHistoricalWeeklyIntervals(){
         SQLiteDatabase db = this.getReadableDatabase();
         List<Period> list = new ArrayList<>();
-        //Calendar cal = Calendar.getInstance();
-        //long current = cal.getTimeInMillis();
-        //DateTimeZone timeZone = DateTimeZone.getDefault();
         MutableDateTime dt = new MutableDateTime();
         long current = dt.getMillis();
         Cursor cursor = db.query(true,INNER_JOIN,
@@ -259,9 +249,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Period> getHistoricalMonthlyIntervals(){
         SQLiteDatabase db = this.getReadableDatabase();
         List<Period> list = new ArrayList<>();
-        //Calendar cal = Calendar.getInstance();
-        //long current = cal.getTimeInMillis();
-        //DateTimeZone timeZone = DateTimeZone.getDefault();
         MutableDateTime dt = new MutableDateTime();
         long current = dt.getMillis();
         Cursor cursor = db.query(true,INNER_JOIN,
@@ -319,8 +306,6 @@ public class DBHelper extends SQLiteOpenHelper {
         itemValues.put(KEY_DATE,i.getDate().getMillis());
         itemValues.put(KEY_STARTTIME, i.getStartTime());
         itemValues.put(KEY_ENDTIME, i.getEndTime());
-        itemValues.put(KEY_STARTINGHOUR, i.getStartinghour());
-        itemValues.put(KEY_ENDINGHOUR, i.getEndinghour());
         itemValues.put(KEY_LOCATION, i.getLocation());
         itemValues.put(KEY_IDESCRIPTION, i.getDescription());
         itemValues.put(KEY_DURATION, i.getDuration());
@@ -344,7 +329,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     null, null, null, null);
             if (bcursor != null)
                 bcursor.moveToFirst();
-            br.spent = br.spent + TimeUnit.MILLISECONDS.toHours(i.getDuration());
+            br.spent = br.spent + i.getDuration();
             ContentValues brValues = new ContentValues();
             br.balance = bcursor.getLong(0) - br.spent;
             brValues.put(KEY_SPENT, br.spent);
@@ -364,41 +349,47 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if(cursor!=null)
             cursor.moveToFirst();
-
-        //Calendar mDate = Calendar.getInstance();
-        //mDate.setTimeInMillis(cursor.getLong(1));
-        Item item = new Item();
-        //Item item = new Item( mDate, cursor.getLong(2),cursor.getLong(3),
-                //cursor.getString(4),cursor.getString(5), cursor.getDouble(6), cursor.getInt(7));
+        MutableDateTime dateTime = new MutableDateTime();
+        dateTime.setTime(cursor.getLong(1));
+        Item item = new Item(cursor.getInt(0),dateTime, cursor.getLong(2),cursor.getLong(3),
+                cursor.getString(4),cursor.getString(5), cursor.getLong(6), cursor.getLong(7));
 
         return item;
     }
 
-    public List<Item> getItemByBudget (Budget budget) {
+    public List<Item> getItemsByBudget (long budgetID) {
         SQLiteDatabase db = this.getReadableDatabase();
         List<Item> list = new ArrayList<Item>();
-
-        long budgetID = budget.getId();
-        String query = "SELECT * FROM" + TABLE_ITEM + " WHERE BUDGET = " + budgetID;
-        Cursor cursor = db.rawQuery(query,null);
+        Cursor cursor = db.query(TABLE_ITEM, new String[]{KEY_ID, KEY_DATE, KEY_STARTTIME, KEY_ENDTIME,
+                        KEY_LOCATION, KEY_IDESCRIPTION, KEY_DURATION,KEY_BUDGET},KEY_BUDGET+ "=?",
+                new String[] {String.valueOf(budgetID)}, null, null, KEY_DATE+ " DESC", null);
         if(cursor.moveToFirst()){
             do {
-                Calendar mDate = Calendar.getInstance();
-                mDate.setTimeInMillis(cursor.getLong(1));
-                Item item = new Item();
-                //Item item = new Item(mDate, cursor.getLong(2),cursor.getLong(3),
-                 //       cursor.getString(4),cursor.getString(5), cursor.getDouble(6), cursor.getInt(7));
+                MutableDateTime mDate = new MutableDateTime(cursor.getLong(1));
+                Item item = new Item(cursor.getLong(0), mDate,cursor.getLong(2),
+                        cursor.getLong(3),cursor.getString(4), cursor.getString(5), cursor.getInt(6),cursor.getLong(7));
                 list.add(item);
             } while (cursor.moveToNext());
         }
         return list;
     }
 
+    public Cursor getTimeRangeforItem(long budgetID, long itemDate){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_BR,
+                new String[] {KEY_STARTDATE, KEY_ENDATE},
+                KEY_BUDGET+"=?"+" and "+KEY_STARTDATE+"<=?"+" and "+KEY_ENDATE+">=?",
+                new String[] {String.valueOf(budgetID),String.valueOf(itemDate),String.valueOf(itemDate)}, null, null, null, null);
+        if(cursor!=null)
+            cursor.moveToFirst();
+        return cursor;
+    }
 
-
-    public int editItem (Item i) {
+    public boolean editItem (Item i) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        ContentValues brValues = new ContentValues();
+
         values.put(KEY_DATE,i.getDate().getMillis());
         values.put(KEY_STARTTIME, i.getStartTime());
         values.put(KEY_ENDTIME, i.getEndTime());
@@ -406,15 +397,66 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(KEY_IDESCRIPTION,i.getDescription());
         values.put(KEY_DURATION,i.getDuration());
         values.put(KEY_BUDGET,i.getBudget());
-        return db.update(TABLE_ITEM, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(i.getId()) });
+        boolean returnValue = true;
+        long itemID = i.getId();
+        long budgetID = i.getBudget();
+        long date = i.getDate().getMillis();
+        Cursor brcursor = db.query(TABLE_BR,
+                new String[] {KEY_ID, KEY_STARTDATE, KEY_ENDATE,KEY_BUDGET, KEY_SPENT,KEY_BALANCE},
+                KEY_BUDGET+"=?"+" and "+KEY_STARTDATE+"<=?"+" and "+KEY_ENDATE+">=?",
+                new String[] {String.valueOf(budgetID),String.valueOf(date),String.valueOf(date)}, null, null, null, null);
+        if(!brcursor.moveToFirst()){
+            returnValue = false;
+        } else {
+            brcursor.moveToFirst();
+            BudgetRecord br = new BudgetRecord(brcursor.getLong(0), brcursor.getLong(1),
+                    brcursor.getLong(2), brcursor.getLong(3), brcursor.getLong(4), brcursor.getLong(5));
+            Cursor itemCursor = db.query(TABLE_ITEM, new String[]{KEY_DURATION},
+                                KEY_ID+"=?",new String[]{String.valueOf(itemID)}, null, null, null, null);
+            if(itemCursor!=null)itemCursor.moveToFirst();
+            br.spent = br.spent + (i.getDuration() - itemCursor.getLong(0));
+            br.balance = br.balance - (i.getDuration() - itemCursor.getLong(0));
+
+            brValues.put(KEY_SPENT,br.spent);
+            brValues.put(KEY_BALANCE,br.balance);
+            db.update(TABLE_ITEM, values, KEY_ID + " = ?",
+                    new String[] { String.valueOf(i.getId()) });
+            db.update(TABLE_BR,brValues,KEY_ID+"=?",
+                    new String[]{String.valueOf(brcursor.getLong(0))});
+        }
+        db.close();
+        return returnValue;
     }
 
-    public void deleteItem (Item i){
+    public boolean deleteItem (Item i){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_ITEM, KEY_ID + " = ?",
-                new String[] { String.valueOf(i.getId()) });
+        ContentValues brValues = new ContentValues();
+        boolean returnValue = true;
+        long itemID = i.getId();
+        long budgetID = i.getBudget();
+        long date = i.getDate().getMillis();
+        Cursor brcursor = db.query(TABLE_BR,
+                new String[] {KEY_ID, KEY_STARTDATE, KEY_ENDATE,KEY_BUDGET, KEY_SPENT,KEY_BALANCE},
+                KEY_BUDGET+"=?"+" and "+KEY_STARTDATE+"<=?"+" and "+KEY_ENDATE+">=?",
+                new String[] {String.valueOf(budgetID),String.valueOf(date),String.valueOf(date)}, null, null, null, null);
+        if(!brcursor.moveToFirst()){
+            returnValue = false;
+        } else {
+            brcursor.moveToFirst();
+            BudgetRecord br = new BudgetRecord(brcursor.getLong(0), brcursor.getLong(1),
+                    brcursor.getLong(2), brcursor.getLong(3), brcursor.getLong(4), brcursor.getLong(5));
+            br.spent = br.spent - i.getDuration();
+            br.balance = br.balance + i.getDuration();
+
+            brValues.put(KEY_SPENT,br.spent);
+            brValues.put(KEY_BALANCE,br.balance);
+            db.delete(TABLE_ITEM, KEY_ID + " = ?",
+                    new String[] { String.valueOf(itemID) });
+            db.update(TABLE_BR,brValues,KEY_ID+"=?",
+                    new String[]{String.valueOf(brcursor.getLong(0))});
+        }
         db.close();
+        return returnValue;
     }
 
 }

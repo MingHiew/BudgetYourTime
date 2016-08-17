@@ -4,6 +4,6 @@
     tools:context="ch.supsi.minhhieu.budgetyourtime.MainActivity">
     <item android:id="@+id/action_add_budget"
         android:icon="@drawable/ic_add"
-        android:title="@string/title_activity_add_edit_budget"
+        android:title="@string/title_activity_add_budget"
         app:showAsAction="always"/>
 </menu>
