@@ -7,4 +7,5 @@ import android.os.Bundle;
  */
 public interface BudgetActions {
     void openItemListFragment(Bundle args);
+    void updateBudget(int which, long budgetID);
 }

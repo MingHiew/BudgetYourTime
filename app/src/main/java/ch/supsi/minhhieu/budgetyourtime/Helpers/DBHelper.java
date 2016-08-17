@@ -186,17 +186,22 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public int editBudget (Budget b){
+    public int updateBudgetName (String newName, long budgetID){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, b.name);
-        values.put(KEY_AMOUNT,b.amount);
-        values.put(KEY_RECUR, b.recur);
+        values.put(KEY_NAME, newName);
 
+        return db.update(TABLE_BUDGET, values, KEY_ID + "=?",
+                new String[] { String.valueOf(budgetID) });
+    }
 
+    public int updateBudgetAmount(int newAmount, long budgetID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_AMOUNT, newAmount);
 
-        return db.update(TABLE_BUDGET, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(b.getId()) });
+        return db.update(TABLE_BUDGET, values, KEY_ID + "=?",
+                new String[] { String.valueOf(budgetID) });
     }
 
     public Cursor getAllBudgetCursor(boolean adapter){
@@ -295,7 +300,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return br;
     }
 
-    public void deleteBudget (Budget b){}
+    public void deleteBudget (long budgetID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_ITEM,KEY_BUDGET+"=?",
+                new String[] { String.valueOf(budgetID) });
+        db.delete(TABLE_BR,KEY_BUDGET+"=?",
+                new String[] { String.valueOf(budgetID) });
+        db.delete(TABLE_ITEM, KEY_ID + " = ?",
+                new String[] { String.valueOf(budgetID)});
+    }
 
     /***********************************************************************************
      ITEMS

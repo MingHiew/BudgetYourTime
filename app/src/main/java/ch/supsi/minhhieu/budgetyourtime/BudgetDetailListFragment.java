@@ -1,16 +1,21 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -78,10 +83,26 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
                 openItemListFragment(bundle);
             }
         });
+
+        budgetDetailList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                budget = list.get(position);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                String[] budgetEdit = {"Change name","Change amount", "Delete budget"};
+                builder.setTitle("Budget Edit Options:");
+                builder.setItems(budgetEdit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        updateBudget(which, budget.getId());
+                    }
+                });
+                builder.show();
+                return false;
+            }
+        });
         return view;
     }
-
-
 
 
     @Override
@@ -92,5 +113,89 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
         transaction.replace(R.id.fragment_container,newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void updateBudget(final int which,final long budgetID){
+        // get prompts.xml view
+        if(which != 2) {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View promptsView = li.inflate(R.layout.budget_edit_prompt, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    getActivity());
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final TextView dialogTitle = ButterKnife.findById(promptsView, R.id.budget_edit_tile);
+            final EditText userInput = ButterKnife.findById(promptsView, R.id.editTextDialogUserInput);
+            switch (which) {
+                case 0:
+                    dialogTitle.setText("Type New Budget Name:");
+                    userInput.setInputType(InputType.TYPE_CLASS_TEXT);
+                    break;
+                case 1:
+                    dialogTitle.setText("Type New Budget Amount in Hours:");
+                    userInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    break;
+            }
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    switch (which) {
+                                        case 0:
+                                            String newName = userInput.getText().toString().trim();
+                                            db.updateBudgetName(newName,budgetID);
+                                            break;
+                                        case 1:
+                                            int newAmount = Integer.parseInt(userInput.getText().toString().trim());
+                                            db.updateBudgetAmount(newAmount,budgetID);
+                                            break;
+                                    }
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Delete Budget");
+            builder.setMessage("All the actitvities under this budget will be deleted. Do you want to proceed?");
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                boolean returnval = false;
+                public void onClick(DialogInterface dialog, int which) {
+                    db.deleteBudget(budgetID);
+                    if (returnval == true){
+                        Toast.makeText(getActivity(), R.string.delete_item_ok, Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.delete_item_failed, Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 }
