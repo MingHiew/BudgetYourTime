@@ -46,8 +46,6 @@ public class AddBudgetActivity extends Activity {
 
     private String nameText, typeText, amountText;
     private ProgressDialog loadingSpinner;
-
-    private String LOG;
     private Budget budget = new Budget();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
