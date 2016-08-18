@@ -155,15 +155,14 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Budget getBudget (int id){
+    public Budget getBudget (long id){
         SQLiteDatabase db = this.getReadableDatabase();
-        Budget budget = new Budget();
         Cursor cursor = db.query(TABLE_BUDGET, new String[] {KEY_ID, KEY_NAME,
                          KEY_AMOUNT, KEY_RECUR}, KEY_ID + "=?",
                 new String[] {String.valueOf(id)}, null, null, null, null);
         if(cursor!=null)
             cursor.moveToFirst();
-            budget = new Budget(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),cursor.getString(3));
+        Budget budget = new Budget(cursor.getLong(0),cursor.getString(1),cursor.getInt(2),cursor.getString(3));
 
         return budget;
     }
@@ -186,24 +185,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public int updateBudgetName (String newName, long budgetID){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAME, newName);
-
-        return db.update(TABLE_BUDGET, values, KEY_ID + "=?",
-                new String[] { String.valueOf(budgetID) });
-    }
-
-    public int updateBudgetAmount(int newAmount, long budgetID){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_AMOUNT, newAmount);
-
-        return db.update(TABLE_BUDGET, values, KEY_ID + "=?",
-                new String[] { String.valueOf(budgetID) });
-    }
-
     public Cursor getAllBudgetCursor(boolean adapter){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -223,13 +204,39 @@ public class DBHelper extends SQLiteOpenHelper {
         long current = dt.getMillis();
         long id = b.getId();
         Cursor cursor = db.query(TABLE_BR,
-                                new String[] {KEY_STARTDATE, KEY_ENDATE,KEY_SPENT,KEY_BALANCE},
+                                new String[] {KEY_ID, KEY_STARTDATE, KEY_ENDATE,KEY_SPENT,KEY_BALANCE},
                                 KEY_BUDGET+"=? and "+KEY_STARTDATE+"<=? and "+KEY_ENDATE+">=?",
                 new String[] {String.valueOf(id),String.valueOf(current),String.valueOf(current)}, null, null, null, null);
         if(cursor!=null)
             cursor.moveToFirst();
-        BudgetRecord br = new BudgetRecord(cursor.getLong(0),cursor.getLong(1),cursor.getLong(2),cursor.getLong(3));
+        BudgetRecord br = new BudgetRecord(cursor.getLong(0),cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4));
         return br;
+    }
+
+    public int updateBudgetName (String newName, long budgetID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, newName);
+
+        return db.update(TABLE_BUDGET, values, KEY_ID + "=?",
+                new String[] { String.valueOf(budgetID) });
+    }
+
+    public int updateBudgetAmount(int newAmount, long budgetID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_AMOUNT, newAmount);
+
+        int r = db.update(TABLE_BUDGET, values, KEY_ID + "=?",
+                new String[] { String.valueOf(budgetID) });
+        Budget b = getBudget(budgetID);
+        BudgetRecord br = getLatestInterval(b);
+        br.balance = b.amount - br.spent;
+        ContentValues brvalues = new ContentValues();
+        brvalues.put(KEY_BALANCE,br.balance);
+        int r1 = db.update(TABLE_BR,brvalues,KEY_ID+"=?",
+                new String[]{String.valueOf(br.getId())});
+        return r1;
     }
 
     public List<Period> getHistoricalWeeklyIntervals(){
@@ -306,7 +313,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(budgetID) });
         db.delete(TABLE_BR,KEY_BUDGET+"=?",
                 new String[] { String.valueOf(budgetID) });
-        db.delete(TABLE_ITEM, KEY_ID + " = ?",
+        db.delete(TABLE_BUDGET, KEY_ID + " = ?",
                 new String[] { String.valueOf(budgetID)});
     }
 
