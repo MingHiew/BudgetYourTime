@@ -73,9 +73,27 @@ public class ItemAdapter extends BaseAdapter {
         }
 
         itemViewHolder viewHolder = (itemViewHolder) view.getTag();
-        String spent = String.valueOf(i.getDuration());
-        viewHolder.timeSpentl.setText(spent);
+        int duration = (int)i.getDuration();
+        switch (duration){
+            case 1:
+                viewHolder.timeLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_dark));
+                break;
+            case 2:
+                viewHolder.timeLayout.setBackgroundColor(context.getResources().getColor(R.color.red));
+                break;
+            case 3:
+                viewHolder.timeLayout.setBackgroundColor(context.getResources().getColor(R.color.f_green));
+                break;
+            case 4:
+                viewHolder.timeLayout.setBackgroundColor(context.getResources().getColor(R.color.purple));
+                break;
+            default:
+                viewHolder.timeLayout.setBackgroundColor(context.getResources().getColor(R.color.iron));
 
+        }
+
+        String spent = String.valueOf(duration);
+        viewHolder.timeSpentl.setText(spent);
         if(Integer.parseInt(spent) <= 1){
             viewHolder.timeUnit.setText("Hr");
         } else {
@@ -111,7 +129,6 @@ public class ItemAdapter extends BaseAdapter {
         viewHolder.itemEndtime.setText("To "+CalendarUtils.toTimeString(context, i.getEndTime()));
         return view;
     }
-
 
     public class itemViewHolder {
 

@@ -42,7 +42,7 @@ public class Item {
         this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
         this.location = mLocation;
         this.description = mDescription;
-        this.duration = TimeUnit.MILLISECONDS.toHours(startTime.getMillis()) - TimeUnit.MILLISECONDS.toHours(endTime.getMillis());
+        this.duration = endTime.getHourOfDay() - startTime.getHourOfDay();
         this.budget = mBudget;
     }
 
@@ -57,7 +57,7 @@ public class Item {
         this.endTime.setTime(timeZone.convertUTCToLocal(dateEnd));
         this.location = mLocation;
         this.description = mDescription;
-        this.duration = TimeUnit.MILLISECONDS.toHours(startTime.getMillis()) - TimeUnit.MILLISECONDS.toHours(endTime.getMillis());
+        this.duration = endTime.getHourOfDay() - startTime.getHourOfDay();
         this.budget = mBudget;
     }
 

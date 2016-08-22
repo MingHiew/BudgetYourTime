@@ -36,6 +36,9 @@ import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
  */
 public class OverviewFragment extends Fragment implements BudgetActions{
 
+
+    @BindView(R.id.budget_overview_title)
+    TextView overviewTitle;
     @BindView(R.id.budget_overview_list)
     @Nullable ListView budgetList;
 
@@ -48,7 +51,6 @@ public class OverviewFragment extends Fragment implements BudgetActions{
 
     public OverviewFragment() {
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,9 @@ public class OverviewFragment extends Fragment implements BudgetActions{
         actionBar.setTitle("Overview");
         ButterKnife.bind(this,view);
         final List<Budget> list = db.getAllBudgets();
+        if(list.size()!=0){
+            overviewTitle.setText("Your Budget Overview");
+        }
         budgetAdapter = new BudgetAdapter(getActivity(),list,db);
         budgetList.setAdapter(budgetAdapter);
         budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -119,11 +124,8 @@ public class OverviewFragment extends Fragment implements BudgetActions{
         // get prompts.xml view
         if(which != 2) {
             createBudgetUpdateDialog(which,budgetID);
-            updateBudgetFragment();
-
         } else {
             createBudgetDeleteDialog(which,budgetID);
-            updateBudgetFragment();
         }
     }
 
@@ -175,7 +177,12 @@ public class OverviewFragment extends Fragment implements BudgetActions{
                                 dialog.cancel();
                             }
                         });
-
+        alertDialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                updateBudgetFragment();
+            }
+        });
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -188,14 +195,14 @@ public class OverviewFragment extends Fragment implements BudgetActions{
         builder.setTitle("Delete Budget");
         builder.setMessage("All the actitvities under this budget will be deleted. Do you want to proceed?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            boolean returnval = false;
+            int i = 0;
             public void onClick(DialogInterface dialog, int which) {
-                db.deleteBudget(budgetID);
-                if (returnval == true){
-                    Toast.makeText(getActivity(), R.string.delete_item_ok, Toast.LENGTH_SHORT).show();
+                 i = db.deleteBudget(budgetID);
+                if (i != 0){
+                    Toast.makeText(getActivity(), R.string.delete_budget_ok, Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(getActivity(), R.string.delete_item_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.delete_budget_failed, Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 }
             }
@@ -204,6 +211,12 @@ public class OverviewFragment extends Fragment implements BudgetActions{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+            }
+        });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                updateBudgetFragment();
             }
         });
         AlertDialog alert = builder.create();

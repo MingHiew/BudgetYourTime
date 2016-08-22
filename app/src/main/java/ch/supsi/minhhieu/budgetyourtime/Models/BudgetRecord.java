@@ -13,7 +13,7 @@ public class BudgetRecord {
 
     public long spent = 0;
     public long balance = 0;
-    public volatile boolean updated = false;
+    public long amount = 0;
 
     public BudgetRecord() {
     }

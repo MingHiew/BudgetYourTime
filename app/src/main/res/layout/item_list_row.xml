@@ -23,7 +23,7 @@
         android:orientation="vertical"
         android:layout_width="40dp"
         android:layout_height="80dp"
-        android:background="@drawable/round_textview"
+        android:background="@color/red"
         android:gravity="left"
         android:layout_weight="1">
         <TextView
@@ -68,7 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="41dp"
             android:textSize="15dp"
-            android:lines="3"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/black"
             android:text="Study algorithm" />
         <TextView
@@ -76,6 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="15dp"
             android:textSize="12dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="at University of Lugano"/>
     </LinearLayout>
     <LinearLayout

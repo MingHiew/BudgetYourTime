@@ -43,6 +43,10 @@
     <!-- Budget -->
     <string name="creating_budget">Creating budget...</string>
     <string name="save_budget">Budget successfully created!</string>
+    <string name="delete_budget_ok">Budget successfully deleted!</string>
+    <string name="delete_budget_failed">Deleting budget failed!</string>
+    <string name="no_budget_created">Please create a budget first!</string>
+
 
     <!-- Item -->
     <string name="create_item">Item successfully created!</string>

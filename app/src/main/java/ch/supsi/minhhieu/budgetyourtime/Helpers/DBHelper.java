@@ -200,16 +200,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public BudgetRecord getLatestInterval(Budget b){
         SQLiteDatabase db = this.getReadableDatabase();
-        MutableDateTime dt = new MutableDateTime();
+        MutableDateTime dt = new MutableDateTime(MutableDateTime.now());
         long current = dt.getMillis();
         long id = b.getId();
         Cursor cursor = db.query(TABLE_BR,
-                                new String[] {KEY_ID, KEY_STARTDATE, KEY_ENDATE,KEY_SPENT,KEY_BALANCE},
+                                new String[] {KEY_ID, KEY_STARTDATE, KEY_ENDATE, KEY_BUDGET, KEY_SPENT,KEY_BALANCE},
                                 KEY_BUDGET+"=? and "+KEY_STARTDATE+"<=? and "+KEY_ENDATE+">=?",
                 new String[] {String.valueOf(id),String.valueOf(current),String.valueOf(current)}, null, null, null, null);
         if(cursor!=null)
             cursor.moveToFirst();
-        BudgetRecord br = new BudgetRecord(cursor.getLong(0),cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4));
+        BudgetRecord br = new BudgetRecord(cursor.getLong(0),cursor.getLong(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),cursor.getLong(5));
         return br;
     }
 
@@ -307,14 +307,25 @@ public class DBHelper extends SQLiteOpenHelper {
         return br;
     }
 
-    public void deleteBudget (long budgetID){
+    public int deleteBudget (long budgetID){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ITEM,KEY_BUDGET+"=?",
                 new String[] { String.valueOf(budgetID) });
         db.delete(TABLE_BR,KEY_BUDGET+"=?",
                 new String[] { String.valueOf(budgetID) });
-        db.delete(TABLE_BUDGET, KEY_ID + " = ?",
+        int i = db.delete(TABLE_BUDGET, KEY_ID + " = ?",
                 new String[] { String.valueOf(budgetID)});
+        return i;
+    }
+
+    public int getConsumptionHistory(long budgetID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ITEM,new String[]{"SUM("+KEY_DURATION+")"},
+                                KEY_BUDGET+"=?",new String[]{String.valueOf(budgetID)},KEY_BUDGET,null,null,null);
+        if(cursor!=null)
+            cursor.moveToFirst();
+
+        return (int) cursor.getLong(0);
     }
 
     /***********************************************************************************

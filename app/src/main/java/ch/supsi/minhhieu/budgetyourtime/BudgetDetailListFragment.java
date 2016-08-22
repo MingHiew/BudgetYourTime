@@ -44,9 +44,6 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
     private BudgetDetailAdapter budgetDetailAdapter;
     private Budget budget = new Budget();
 
-
-    private static final String KEY_POSITION="position";
-
     public BudgetDetailListFragment() {
         // Required empty public constructor
     }
@@ -119,11 +116,10 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
         // get prompts.xml view
         if(which != 2) {
            createBudgetUpdateDialog(which,budgetID);
-            updateBudgetFragment();
         } else {
             createBudgetDeleteDialog(which,budgetID);
-            updateBudgetFragment();
         }
+        updateBudgetFragment();
     }
 
     public void createBudgetUpdateDialog(final int which,final long budgetID){
@@ -174,7 +170,12 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
                                 dialog.cancel();
                             }
                         });
-
+        alertDialogBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                updateBudgetFragment();
+            }
+        });
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -187,10 +188,9 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
         builder.setTitle("Delete Budget");
         builder.setMessage("All the actitvities under this budget will be deleted. Do you want to proceed?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            boolean returnval = false;
             public void onClick(DialogInterface dialog, int which) {
-                db.deleteBudget(budgetID);
-                if (returnval == true){
+                int i = db.deleteBudget(budgetID);
+                if (i != 0){
                     Toast.makeText(getActivity(), R.string.delete_item_ok, Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 } else {
@@ -205,12 +205,18 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
                 dialog.dismiss();
             }
         });
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                updateBudgetFragment();
+            }
+        });
         AlertDialog alert = builder.create();
         alert.show();
     }
 
     public void updateBudgetFragment(){
-        BudgetDetailListFragment newFragment = new BudgetDetailListFragment();
+        BudgetDetailPagerFragment newFragment = new BudgetDetailPagerFragment();
         android.support.v4.app.FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container,newFragment);
         transaction.addToBackStack(null);

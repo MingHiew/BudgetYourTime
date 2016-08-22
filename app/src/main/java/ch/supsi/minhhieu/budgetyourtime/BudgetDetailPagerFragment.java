@@ -50,7 +50,6 @@ public class BudgetDetailPagerFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +59,6 @@ public class BudgetDetailPagerFragment extends Fragment {
             isWeekly = bundle.getBoolean("isWeekly");
         }
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,12 +78,10 @@ public class BudgetDetailPagerFragment extends Fragment {
         return view;
     }
 
-
     private BudgetPagerAdapter buildPagerAdapter(List<Period> prdList){
         return(new BudgetPagerAdapter(getActivity(), getChildFragmentManager(),prdList));
 
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -127,8 +122,6 @@ public class BudgetDetailPagerFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 
     @Override
     public void onStop() {

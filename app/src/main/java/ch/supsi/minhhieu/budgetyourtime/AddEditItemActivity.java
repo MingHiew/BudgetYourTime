@@ -95,7 +95,7 @@ public class AddEditItemActivity extends FragmentActivity {
     }
     private void presetAddNewActivityViews(){
         if(typeOfDialog == ADD_NEW_ITEM){
-            itemActivityTitle.setText("Add New Expense");
+            itemActivityTitle.setText("Your New Activity");
             if (activityDate == null) return;
             long today = MutableDateTime.now().getMillis();
             activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this, today));
@@ -104,7 +104,7 @@ public class AddEditItemActivity extends FragmentActivity {
             mEndTime = CalendarUtils.getNearestHourAndMinutes()+3600000;
             endTime.setText(CalendarUtils.toTimeString(AddEditItemActivity.this,mEndTime));
         } else if(typeOfDialog == EDIT_ITEM){
-            itemActivityTitle.setText("Edit Expense");
+            itemActivityTitle.setText("Edit Your Activity");
             mItem = db.getItem(itemID);
             activityDate.setText(CalendarUtils.toDayString(AddEditItemActivity.this,mItem.getDate().getMillis()));
             mStartTime = mItem.getStartTime();

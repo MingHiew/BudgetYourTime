@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +53,11 @@ public class HomeActivity extends AppCompatActivity
         fab_new_activity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNewItem();
+                if (db.getAllBudgets().size() == 0) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.no_budget_created), Toast.LENGTH_SHORT).show();
+                } else {
+                    createNewItem();
+                }
             }
         });
 
@@ -128,7 +133,11 @@ public class HomeActivity extends AppCompatActivity
             fragmentTransaction.commit();
             fab_new_activity.hide();
         } else if (id == R.id.nav_stats) {
-
+            PieChartFragment piechartFragment = new PieChartFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container,piechartFragment);
+            fragmentTransaction.commit();
+            fab_new_activity.hide();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
