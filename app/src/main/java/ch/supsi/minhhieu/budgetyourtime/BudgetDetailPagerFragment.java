@@ -1,9 +1,11 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -44,7 +46,7 @@ public class BudgetDetailPagerFragment extends Fragment {
     List<Period> prdList;
     private Toolbar toolbar=null;
     private String[] budget_type={"Weekly","Monthly"};
-
+    FloatingActionButton fab;
 
     public BudgetDetailPagerFragment() {
         // Required empty public constructor
@@ -68,6 +70,8 @@ public class BudgetDetailPagerFragment extends Fragment {
         ButterKnife.bind(this,view);
         setHasOptionsMenu(true);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+
         actionBar.setTitle("Budget Detail View");
         if(isWeekly){
             prdList = db.getHistoricalWeeklyIntervals();
@@ -123,6 +127,7 @@ public class BudgetDetailPagerFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onStop() {
         super.onStop();
@@ -131,4 +136,5 @@ public class BudgetDetailPagerFragment extends Fragment {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
     }
+
 }

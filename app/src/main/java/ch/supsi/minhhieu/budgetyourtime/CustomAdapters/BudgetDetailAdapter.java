@@ -74,7 +74,7 @@ public class BudgetDetailAdapter extends BaseAdapter {
         View view = convertView;
 
         Budget b = list.get(position);
-        BudgetRecord latestBR = db.getBudgetRecordByInterval(b,startDate,endDate);
+        BudgetRecord br = db.getBudgetRecordByInterval(b,startDate,endDate);
         if (view == null) {
             view = inflater.inflate(R.layout.budget_list_row,null);
             OverviewViewHolder viewHolder = new OverviewViewHolder(view);
@@ -95,22 +95,22 @@ public class BudgetDetailAdapter extends BaseAdapter {
         StringBuilder sb = this.sb;
 
         sb.setLength(0);
-        sb.append(DateUtils.formatDateRange(context, latestBR.startDate, latestBR.endDate,
+        sb.append(DateUtils.formatDateRange(context, br.startDate, br.endDate,
                 DateUtils.FORMAT_SHOW_DATE|DateUtils.FORMAT_ABBREV_MONTH));
         viewHolder.budgetListTimeframe.setText(sb.toString());
-        if(latestBR.spent == 1){
-            viewHolder.budgetConsumed.setText("Spent: "+String.valueOf(latestBR.spent)+ " hour");
+        if(br.spent == 1){
+            viewHolder.budgetConsumed.setText("Spent: "+String.valueOf(br.spent)+ " hour");
         } else {
-            viewHolder.budgetConsumed.setText("Spent: "+String.valueOf(latestBR.spent)+ " hours");
+            viewHolder.budgetConsumed.setText("Spent: "+String.valueOf(br.spent)+ " hours");
         }
-        if (latestBR.balance == 1){
-            viewHolder.budgetRemained.setText("Remaining Balance: "+String.valueOf(latestBR.balance)+" hour");
+        if (br.balance == 1){
+            viewHolder.budgetRemained.setText("Remaining Balance: "+String.valueOf(br.balance)+" hour");
         } else {
-            viewHolder.budgetRemained.setText("Remaining Balance: "+String.valueOf(latestBR.balance)+" hours");
+            viewHolder.budgetRemained.setText("Remaining Balance: "+String.valueOf(br.balance)+" hours");
         }
 
         viewHolder.budgetStatusBar.setMax(b.amount);
-        viewHolder.budgetStatusBar.setProgress((int)latestBR.spent);
+        viewHolder.budgetStatusBar.setProgress((int)br.spent);
 
         return view;
     }

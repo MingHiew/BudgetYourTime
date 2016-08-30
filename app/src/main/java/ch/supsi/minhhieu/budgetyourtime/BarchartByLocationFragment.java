@@ -2,10 +2,10 @@ package ch.supsi.minhhieu.budgetyourtime;
 
 
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -21,10 +21,8 @@ import android.view.WindowManager;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.Legend.LegendPosition;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -41,12 +39,13 @@ import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
 import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
 import ch.supsi.minhhieu.budgetyourtime.Utils.WeekDayAxisValueFormatter;
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BarChartFragment extends Fragment {
+public class BarchartByLocationFragment extends Fragment {
 
-    @BindView(R.id.barchart1)
+    @BindView(R.id.barchart2)
     BarChart barChart;
 
     private Typeface mTfLight;
@@ -54,25 +53,17 @@ public class BarChartFragment extends Fragment {
     private Typeface mTfXBItalic;
     private DBHelper db;
     private String[] chartType = new String[]{"Piechart: Consumption by Budget",
-            "Barchart: Week Overview","Barchart: Week Overview by Location"};
+                                "Barchart: Week Overview","Barchart: Week Overview by Location"};
 
-    public BarChartFragment() {
+    public BarchartByLocationFragment() {
         // Required empty public constructor
     }
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        db = DBHelper.getInstance(this.getContext());
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_barchart, container, false);
         ButterKnife.bind(this,view);
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -84,7 +75,7 @@ public class BarChartFragment extends Fragment {
         mTfRegular = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
         mTfXBItalic = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-ExtraBoldItalic.ttf");
 
-        actionBar.setTitle("Chart: Week Overview");
+        actionBar.setTitle("Chart: Week Overview by Location");
 
         barChart.setDescription("");
         barChart.setMaxVisibleValueCount(40);
@@ -97,7 +88,7 @@ public class BarChartFragment extends Fragment {
         AxisValueFormatter xAxisFormatter = new WeekDayAxisValueFormatter(barChart);
 
         XAxis xl = barChart.getXAxis();
-        xl.setPosition(XAxisPosition.BOTTOM);
+        xl.setPosition(XAxis.XAxisPosition.BOTTOM);
         xl.setTypeface(mTfXBItalic);
         xl.setTextColor(R.color.green);
         xl.setDrawAxisLine(true);
@@ -121,7 +112,7 @@ public class BarChartFragment extends Fragment {
         yr.setAxisMinValue(0f);
 
         Legend l = barChart.getLegend();
-        l.setPosition(LegendPosition.ABOVE_CHART_LEFT);
+        l.setPosition(Legend.LegendPosition.ABOVE_CHART_LEFT);
         l.setForm(Legend.LegendForm.SQUARE);
         l.setFormSize(12f);
         l.setTextSize(15f);
@@ -130,6 +121,59 @@ public class BarChartFragment extends Fragment {
         setData();
 
         return view;
+    }
+
+    private void setData(){
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        BarDataSet set;
+        List<String> locationList = new ArrayList<>();
+        locationList = db.getAllLocations();
+        for (int i = 1; i <= 7; i++){
+            float[] yVal = new float[locationList.size()];
+            for (int f = 0; f < locationList.size();f++){
+                int val = db.getTimeSpentByLocation(locationList.get(f),i);
+                yVal[f] = (float)val;
+            }
+            entries.add(new BarEntry(i,yVal));
+        }
+        if (barChart.getData() != null &&
+                barChart.getData().getDataSetCount() > 0) {
+            set = (BarDataSet) barChart.getData().getDataSetByIndex(0);
+            set.setValues(entries);
+            barChart.getData().notifyDataChanged();
+            barChart.notifyDataSetChanged();
+        } else {
+            set = new BarDataSet(entries, "");
+            set.setColors(getColors(locationList.size()));
+            String[] labels = new String[locationList.size()];
+            for (int m = 0; m < labels.length;m++){
+                String label = locationList.get(m);
+                labels[m] = label;
+            }
+            set.setStackLabels(labels);
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set);
+
+            BarData data = new BarData(dataSets);
+            data.setValueTextColor(Color.WHITE);
+            data.setHighlightEnabled(true);
+
+            barChart.setData(data);
+        }
+        barChart.setFitBars(true);
+        barChart.invalidate();
+    }
+
+    private int[] getColors(int number) {
+
+        int[] colors = new int[number];
+
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = ColorTemplate.MATERIAL_COLORS[i];
+        }
+
+        return colors;
     }
 
     @Override
@@ -164,7 +208,6 @@ public class BarChartFragment extends Fragment {
                                 fragmentTransaction.replace(R.id.fragment_container,barChartFragment1);
                                 fragmentTransaction.commit();
                                 break;
-
                         }
                     }
                 }).create().show();
@@ -172,59 +215,5 @@ public class BarChartFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
 
         }
-    }
-
-    public void setData(){
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        BarDataSet set;
-        List<Budget> list = db.getAllBudgets();
-        for (int i = 1; i <= 7; i++){
-            float[] yVal = new float[list.size()];
-            for (int f = 0; f < list.size();f++){
-                Budget b = list.get(f);
-                int val = db.getWeekConsumption(b.getId(),i);
-                yVal[f] = (float)val;
-            }
-            entries.add(new BarEntry(i,yVal));
-        }
-
-        if (barChart.getData() != null &&
-                barChart.getData().getDataSetCount() > 0) {
-            set = (BarDataSet) barChart.getData().getDataSetByIndex(0);
-            set.setValues(entries);
-            barChart.getData().notifyDataChanged();
-            barChart.notifyDataSetChanged();
-        } else {
-            set = new BarDataSet(entries, "");
-            set.setColors(getColors(list.size()));
-            String[] labels = new String[list.size()];
-            for (int m = 0; m < labels.length;m++){
-                Budget b = list.get(m);
-                labels[m] = b.name;
-            }
-            set.setStackLabels(labels);
-
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set);
-
-            BarData data = new BarData(dataSets);
-            data.setValueTextColor(Color.WHITE);
-            data.setHighlightEnabled(true);
-
-            barChart.setData(data);
-        }
-        barChart.setFitBars(true);
-        barChart.invalidate();
-    }
-
-    private int[] getColors(int number) {
-
-        int[] colors = new int[number];
-
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = ColorTemplate.MATERIAL_COLORS[i];
-        }
-
-        return colors;
     }
 }

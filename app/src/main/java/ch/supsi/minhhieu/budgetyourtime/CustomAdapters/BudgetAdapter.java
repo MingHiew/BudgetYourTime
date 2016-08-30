@@ -79,10 +79,10 @@ public class BudgetAdapter extends BaseAdapter{
         RecurInterval interval = b.getRecur().interval;
         switch (interval){
             case WEEKLY:
-                viewHolder.budgetListAdmount.setText(String.valueOf(b.amount)+" hours/week");
+                viewHolder.budgetListAdmount.setText(String.valueOf(latestBR.amount)+" hours/week");
                 break;
             case MONTHLY:
-                viewHolder.budgetListAdmount.setText(String.valueOf(b.amount)+" hours/month");
+                viewHolder.budgetListAdmount.setText(String.valueOf(latestBR.amount)+" hours/month");
                 break;
         }
         StringBuilder sb = this.sb;

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -44,6 +45,8 @@ public class OverviewFragment extends Fragment implements BudgetActions{
 
     private DBHelper db;
     private BudgetAdapter budgetAdapter;
+    FloatingActionButton fab;
+
     private Budget budget = new Budget();
     public static OverviewFragment newInstance() {
         return new OverviewFragment();
@@ -67,6 +70,8 @@ public class OverviewFragment extends Fragment implements BudgetActions{
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Overview");
+        fab = (FloatingActionButton)getActivity().findViewById(R.id.add_new_activity);
+        fab.show();
         ButterKnife.bind(this,view);
         final List<Budget> list = db.getAllBudgets();
         if(list.size()!=0){

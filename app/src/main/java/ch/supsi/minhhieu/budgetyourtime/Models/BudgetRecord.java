@@ -18,32 +18,34 @@ public class BudgetRecord {
     public BudgetRecord() {
     }
 
-    public BudgetRecord(long mID, long startDate, long endDate, long budgetID,long spent,long balance) {
+    public BudgetRecord(long mID, long startDate, long endDate, long budgetID,long spent,long balance, long amount) {
         this.id = mID;
         this.startDate = startDate;
         this.endDate = endDate;
         this.budgetID = budgetID;
         this.spent = spent;
         this.balance = balance;
+        this.amount = amount;
     }
 
-    public BudgetRecord(long startDate, long endDate, long budgetID, long spent,long balance) {
+    public BudgetRecord(long startDate, long endDate, long budgetID, long spent,long balance, long amount) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.budgetID = budgetID;
         this.spent = spent;
         this.balance = balance;
+        this.amount = amount;
     }
 
     public long getId() {
         return id;
     }
 
-    public BudgetRecord(long startDate, long endDate, long spent, long balance) {
+    public BudgetRecord(long startDate, long endDate, long spent, long balance, long amount) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.spent = spent;
-
         this.balance = balance;
+        this.amount = amount;
     }
 }

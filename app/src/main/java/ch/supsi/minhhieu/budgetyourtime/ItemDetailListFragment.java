@@ -40,7 +40,7 @@ public class ItemDetailListFragment extends Fragment {
     private DBHelper db;
     private ItemAdapter itemAdapter;
     private String budgetName;
-
+    FloatingActionButton fab;
     public ItemDetailListFragment() {
         // Required empty public constructor
     }
@@ -64,7 +64,7 @@ public class ItemDetailListFragment extends Fragment {
         ButterKnife.bind(this,view);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle("Budget Detail: "+budgetName);
-        FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.add_new_activity);
+        fab = (FloatingActionButton)getActivity().findViewById(R.id.add_new_activity);
         fab.hide();
         final List<Item> list = db.getItemsByBudget(budgetID);
         if (list.size()>0) {
@@ -148,6 +148,7 @@ public class ItemDetailListFragment extends Fragment {
                 break;
         }
     }
+
 
     public void openItemListFragment(Bundle args){
         ItemDetailListFragment newFragment = new ItemDetailListFragment();
