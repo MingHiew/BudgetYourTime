@@ -26,9 +26,9 @@ public class CalendarUtils {
     }
 
     public static String toDayStringAbbrev(Context context, long timeMillis) {
-        return DateUtils.formatDateTime(context, timeMillis,
-                DateUtils.FORMAT_ABBREV_ALL |
-                        DateUtils.FORMAT_SHOW_YEAR);
+        return DateUtils.formatDateTime(context, timeMillis,DateUtils.FORMAT_SHOW_WEEKDAY |
+                                                            DateUtils.FORMAT_SHOW_DATE |
+                                                            DateUtils.FORMAT_ABBREV_MONTH);
     }
 
     public static String toTimeString(Context context, long timeMillis) {

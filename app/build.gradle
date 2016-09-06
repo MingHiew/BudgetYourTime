@@ -29,6 +29,9 @@ android {
             universalApk false
         }
     }
+    buildTypes.each {
+        it.buildConfigField 'String', 'f6c1a6ebbe85d2b7400d2f3044c49bed', MyOpenWeatherMapApiKey
+    }
 }
 
 dependencies {

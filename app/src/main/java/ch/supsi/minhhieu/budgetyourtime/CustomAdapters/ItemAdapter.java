@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
 import ch.supsi.minhhieu.budgetyourtime.Models.Item;
 import ch.supsi.minhhieu.budgetyourtime.R;
 import ch.supsi.minhhieu.budgetyourtime.Utils.CalendarUtils;
+import ch.supsi.minhhieu.budgetyourtime.Utils.Utils;
 
 /**
  * Created by acer on 03/08/2016.
@@ -74,6 +76,7 @@ public class ItemAdapter extends BaseAdapter {
 
         itemViewHolder viewHolder = (itemViewHolder) view.getTag();
         int duration = (int)i.getDuration();
+        int weatherID = i.getWeatherID();
         switch (duration){
             case 1:
                 viewHolder.timeLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_dark));
@@ -121,12 +124,16 @@ public class ItemAdapter extends BaseAdapter {
             viewHolder.timeRange.setText(dateRange);
         }
 
-        viewHolder.budgetName1.setText(budgetName);
         viewHolder.itemDescription.setText(i.getDescription());
         viewHolder.itemLocation.setText(i.getLocation());
         viewHolder.itemDate.setText(CalendarUtils.toDayStringAbbrev(context,i.getDate().getMillis()));
-        viewHolder.itemStarttime.setText("From "+CalendarUtils.toTimeString(context, i.getStartTime()));
-        viewHolder.itemEndtime.setText("To "+CalendarUtils.toTimeString(context, i.getEndTime()));
+        viewHolder.itemStarttime.setText(CalendarUtils.toTimeString(context, i.getStartTime()));
+        viewHolder.itemEndtime.setText(CalendarUtils.toTimeString(context, i.getEndTime()));
+        if (weatherID == -1){
+            viewHolder.weatherDesc.setVisibility(View.INVISIBLE);
+        } else {
+            viewHolder.weatherDesc.setImageResource(Utils.getArtResourceForWeatherCondition(weatherID));
+        }
         return view;
     }
 
@@ -140,8 +147,6 @@ public class ItemAdapter extends BaseAdapter {
         TextView timeSpentl;
         @BindView(R.id.time_unit)
         TextView timeUnit;
-        @BindView(R.id.budget_name1)
-        TextView budgetName1;
         @BindView(R.id.item_description)
         TextView itemDescription;
         @BindView(R.id.item_location)
@@ -152,7 +157,8 @@ public class ItemAdapter extends BaseAdapter {
         TextView itemStarttime;
         @BindView(R.id.item_endtime)
         TextView itemEndtime;
-
+        @BindView(R.id.weather_desc)
+        ImageView weatherDesc;
         public itemViewHolder(View view) {
             ButterKnife.bind(this,view);
         }

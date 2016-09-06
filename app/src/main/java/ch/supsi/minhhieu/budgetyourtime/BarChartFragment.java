@@ -102,6 +102,7 @@ public class BarChartFragment extends Fragment {
         xl.setTextColor(R.color.green);
         xl.setDrawAxisLine(true);
         xl.setDrawGridLines(true);
+        xl.setCenterAxisLabels(false);
         xl.setGranularity(1f);
         xl.setLabelCount(7);
         xl.setAxisMinValue(0);
@@ -121,11 +122,15 @@ public class BarChartFragment extends Fragment {
         yr.setAxisMinValue(0f);
 
         Legend l = barChart.getLegend();
-        l.setPosition(LegendPosition.ABOVE_CHART_LEFT);
+        l.setTextColor(R.color.black);
+        l.setPosition(LegendPosition.ABOVE_CHART_CENTER);
         l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(12f);
-        l.setTextSize(15f);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setFormSize(10f);
+        l.setTextSize(12f);
         l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
 
         setData();
 
@@ -220,9 +225,25 @@ public class BarChartFragment extends Fragment {
     private int[] getColors(int number) {
 
         int[] colors = new int[number];
+        ArrayList<Integer> allColors = new ArrayList<Integer>();
+
+        for (int c : ColorTemplate.MATERIAL_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            allColors.add(c);
 
         for (int i = 0; i < colors.length; i++) {
-            colors[i] = ColorTemplate.MATERIAL_COLORS[i];
+            colors[i] = allColors.get(i);
         }
 
         return colors;

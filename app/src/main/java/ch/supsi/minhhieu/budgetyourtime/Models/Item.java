@@ -23,16 +23,13 @@ public class Item {
     public MutableDateTime startTime;
     public MutableDateTime endTime;
     private long duration;
-
+    public int weatherID;
+    public String locality;
     public Item() {
-        //startTime.add(Calendar.HOUR_OF_DAY, 1);
-        //startTime.set(Calendar.MINUTE, 0);
-        //endTime.add(Calendar.HOUR_OF_DAY, 2);
-        //endTime.set(Calendar.MINUTE, 0);
     }
 
 
-    public Item(MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mBudget) {
+    public Item(MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mBudget, int mWeatherID, String mLocality) {
         DateTimeZone timeZone = DateTimeZone.getDefault();
         this.date = new MutableDateTime();
         this.startTime = new MutableDateTime();
@@ -44,9 +41,11 @@ public class Item {
         this.description = mDescription;
         this.duration = endTime.getHourOfDay() - startTime.getHourOfDay();
         this.budget = mBudget;
+        this.weatherID = mWeatherID;
+        this.locality = mLocality;
     }
 
-    public Item(long mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mBudget) {
+    public Item(long mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription, long mBudget, int mWeatherID, String mLocality) {
         this.id = mId;
         DateTimeZone timeZone = DateTimeZone.getDefault();
         this.date = new MutableDateTime();
@@ -59,9 +58,11 @@ public class Item {
         this.description = mDescription;
         this.duration = endTime.getHourOfDay() - startTime.getHourOfDay();
         this.budget = mBudget;
+        this.weatherID = mWeatherID;
+        this.locality = mLocality;
     }
 
-    public Item(long mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription,long duration, long mBudget) {
+    public Item(long mId, MutableDateTime mDate, long dateStart, long dateEnd, String mLocation, String mDescription,long duration, long mBudget, int mWeatherID, String mLocality) {
         this.id = mId;
         DateTimeZone timeZone = DateTimeZone.getDefault();
         this.date = new MutableDateTime();
@@ -74,6 +75,8 @@ public class Item {
         this.description = mDescription;
         this.duration = duration;
         this.budget = mBudget;
+        this.weatherID = mWeatherID;
+        this.locality = mLocality;
     }
 
     public long getId() {
@@ -108,4 +111,11 @@ public class Item {
         return date;
     }
 
+    public int getWeatherID() {
+        return weatherID;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
 }

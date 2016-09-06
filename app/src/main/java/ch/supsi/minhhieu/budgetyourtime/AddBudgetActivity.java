@@ -41,7 +41,6 @@ public class AddBudgetActivity extends Activity {
     ImageView saveBudget;
 
     public static final int ADD_NEW_BUDGET = 1;
-    public static final int EDIT_BUDGET = 2;
     DBHelper db;
 
     private String nameText, typeText, amountText;

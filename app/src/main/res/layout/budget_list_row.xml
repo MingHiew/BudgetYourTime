@@ -7,6 +7,8 @@
     android:layout_height="wrap_content">
     <TextView
         android:id="@+id/budget_list_title"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Study in University"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
@@ -22,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="bottom"
+            android:fontFamily="sans-serif-condensed"
             android:layout_marginLeft="5dp"
             android:textAlignment="gravity"
             android:textColor="@color/black"
@@ -32,6 +35,8 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textColor="@color/red"
+            android:fontFamily="sans-serif-condensed"
+            android:text="8 hours/week"
             android:layout_weight="1"
             android:layout_marginRight="5dp"
             android:textStyle="bold"
@@ -55,6 +60,7 @@
             android:layout_height="match_parent"
             android:textColor="@color/black"
             android:layout_marginLeft="5dp"
+            android:fontFamily="sans-serif-condensed"
             android:layout_weight="1"
             android:text="Spent: 4 hours"/>
         <TextView
@@ -63,6 +69,7 @@
             android:layout_height="match_parent"
             android:textColor="@color/black"
             android:layout_marginRight="5dp"
+            android:fontFamily="sans-serif-condensed"
             android:layout_weight="1"
             android:gravity="right"
             android:textAlignment="gravity"

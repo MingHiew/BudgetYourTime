@@ -2,10 +2,10 @@ package ch.supsi.minhhieu.budgetyourtime;
 
 
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -21,6 +21,9 @@ import android.view.WindowManager;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.Legend.LegendOrientation;
+import com.github.mikephil.charting.components.Legend.LegendForm;
+import com.github.mikephil.charting.components.Legend.LegendPosition;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -36,7 +39,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
-import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
 import ch.supsi.minhhieu.budgetyourtime.Utils.WeekDayAxisValueFormatter;
 
 
@@ -59,12 +61,18 @@ public class BarchartByLocationFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        db = DBHelper.getInstance(this.getContext());
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_barchart, container, false);
+        View view = inflater.inflate(R.layout.fragment_barchart_by_location, container, false);
         ButterKnife.bind(this,view);
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -93,6 +101,7 @@ public class BarchartByLocationFragment extends Fragment {
         xl.setTextColor(R.color.green);
         xl.setDrawAxisLine(true);
         xl.setDrawGridLines(true);
+        xl.setCenterAxisLabels(false);
         xl.setGranularity(1f);
         xl.setLabelCount(7);
         xl.setAxisMinValue(0);
@@ -112,11 +121,15 @@ public class BarchartByLocationFragment extends Fragment {
         yr.setAxisMinValue(0f);
 
         Legend l = barChart.getLegend();
-        l.setPosition(Legend.LegendPosition.ABOVE_CHART_LEFT);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(12f);
-        l.setTextSize(15f);
+        l.setTextColor(R.color.black);
+        l.setPosition(LegendPosition.ABOVE_CHART_CENTER);
+        l.setForm(LegendForm.SQUARE);
+        l.setOrientation(LegendOrientation.VERTICAL);
+        l.setFormSize(10f);
+        l.setTextSize(12f);
         l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
 
         setData();
 
@@ -126,51 +139,68 @@ public class BarchartByLocationFragment extends Fragment {
     private void setData(){
         ArrayList<BarEntry> entries = new ArrayList<>();
         BarDataSet set;
-        List<String> locationList = new ArrayList<>();
-        locationList = db.getAllLocations();
-        for (int i = 1; i <= 7; i++){
-            float[] yVal = new float[locationList.size()];
-            for (int f = 0; f < locationList.size();f++){
-                int val = db.getTimeSpentByLocation(locationList.get(f),i);
-                yVal[f] = (float)val;
+        List<String> locationList = db.getThisWeekLocations();
+        if(locationList.size() != 0) {
+            for (int i = 1; i <= 7; i++) {
+                float[] yVal = new float[locationList.size()];
+                for (int f = 0; f < locationList.size(); f++) {
+                    int val = db.getTimeSpentByLocation(locationList.get(f), i);
+                    yVal[f] = (float) val;
+                }
+                entries.add(new BarEntry(i, yVal));
             }
-            entries.add(new BarEntry(i,yVal));
-        }
-        if (barChart.getData() != null &&
-                barChart.getData().getDataSetCount() > 0) {
-            set = (BarDataSet) barChart.getData().getDataSetByIndex(0);
-            set.setValues(entries);
-            barChart.getData().notifyDataChanged();
-            barChart.notifyDataSetChanged();
-        } else {
-            set = new BarDataSet(entries, "");
-            set.setColors(getColors(locationList.size()));
-            String[] labels = new String[locationList.size()];
-            for (int m = 0; m < labels.length;m++){
-                String label = locationList.get(m);
-                labels[m] = label;
+            if (barChart.getData() != null &&
+                    barChart.getData().getDataSetCount() > 0) {
+                set = (BarDataSet) barChart.getData().getDataSetByIndex(0);
+                set.setValues(entries);
+                barChart.getData().notifyDataChanged();
+                barChart.notifyDataSetChanged();
+            } else {
+                set = new BarDataSet(entries, "");
+                set.setColors(getColors(locationList.size()));
+                String[] labels = new String[locationList.size()];
+                for (int m = 0; m < labels.length; m++) {
+                    String label = locationList.get(m);
+                    labels[m] = label;
+                }
+                set.setStackLabels(labels);
+
+                ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+                dataSets.add(set);
+
+                BarData data = new BarData(dataSets);
+                data.setValueTextColor(Color.WHITE);
+                data.setHighlightEnabled(true);
+
+                barChart.setData(data);
             }
-            set.setStackLabels(labels);
-
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set);
-
-            BarData data = new BarData(dataSets);
-            data.setValueTextColor(Color.WHITE);
-            data.setHighlightEnabled(true);
-
-            barChart.setData(data);
+            barChart.setFitBars(true);
+            barChart.invalidate();
         }
-        barChart.setFitBars(true);
-        barChart.invalidate();
     }
 
     private int[] getColors(int number) {
 
         int[] colors = new int[number];
+        ArrayList<Integer> allColors = new ArrayList<Integer>();
+
+        for (int c : ColorTemplate.MATERIAL_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            allColors.add(c);
+
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            allColors.add(c);
 
         for (int i = 0; i < colors.length; i++) {
-            colors[i] = ColorTemplate.MATERIAL_COLORS[i];
+            colors[i] = allColors.get(i);
         }
 
         return colors;

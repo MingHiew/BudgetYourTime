@@ -2,18 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="80dp"
     android:background="@color/white">
-    <TextView
-        android:id="@+id/time_range"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/colorPrimary"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:gravity="center"
-        android:text="2016 15/08 - 2016 21/08"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -50,16 +40,32 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/item_date"
-                android:layout_width="wrap_content"
+                android:id="@+id/budget_name1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="sans-serif-light"
                 android:textColor="@color/blue"
+                android:text="Study in University"/>
+        <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/activityDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-light"
                 android:text="Friday - May 02"/>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -92,45 +98,45 @@
                         android:text="5:00 PM"/>
                 </LinearLayout>
                 <ImageView
-                    android:id="@+id/weather_desc"
+                    android:id="@+id/list_item_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/art_clouds"/>
+                    android:src="@drawable/art_light_clouds"/>
             </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1.5">
-            <TextView
-                android:id="@+id/item_location"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
-                android:textSize="13dp"
-                android:paddingTop="2dp"
-                android:paddingLeft="16dp"
-                android:textStyle="italic"
-                android:ellipsize="marquee"
-                android:gravity="left"
-                android:paddingRight="4dp"
-                android:maxLines="1"
-                android:layout_weight="0.23"
-                android:text="University of Lugano"/>
-            <TextView
-                android:id="@+id/item_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:paddingLeft="16dp"
-                android:ellipsize="marquee"
-                android:textStyle="italic"
-                android:fontFamily="sans-serif-condensed"
-                android:maxLines="3"
-                android:layout_weight="1"
-                android:textColor="@color/black"
-                android:text="Study algorithm in the University of Lugano" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1.5">
+                    <TextView
+                        android:id="@+id/item_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textSize="13dp"
+                        android:paddingLeft="16dp"
+                        android:textStyle="italic"
+                        android:ellipsize="marquee"
+                        android:gravity="left"
+                        android:paddingRight="4dp"
+                        android:maxLines="1"
+                        android:layout_weight="0.23"
+                        android:text="University of Lugano"/>
+                    <TextView
+                        android:id="@+id/item_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:paddingLeft="16dp"
+                        android:ellipsize="marquee"
+                        android:fontFamily="sans-serif-condensed"
+                        android:maxLines="3"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:text="Study algorithm in the University of Lugano" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
