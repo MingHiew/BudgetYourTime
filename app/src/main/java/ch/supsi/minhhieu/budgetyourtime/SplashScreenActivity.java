@@ -2,17 +2,31 @@ package ch.supsi.minhhieu.budgetyourtime;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.TextView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SplashScreenActivity extends Activity {
 
-    private static int SPLASH_TIME_OUT = 1500;
+    @BindView(R.id.splashscreen_appname)
+    TextView mAppName;
 
+    private static int SPLASH_TIME_OUT = 1500;
+    private Typeface mKaushanScript;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        ButterKnife.bind(this);
+
+        mKaushanScript = Typeface.createFromAsset(getAssets(), "KaushanScript-Regular.ttf");
+
+        mAppName.setTypeface(mKaushanScript);
+
         new Handler().postDelayed(new Runnable() {
 
             @Override

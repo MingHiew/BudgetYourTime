@@ -8,17 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 import org.joda.time.DateTimeConstants;
-import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
 import ch.supsi.minhhieu.budgetyourtime.Models.BudgetRecord;
-import ch.supsi.minhhieu.budgetyourtime.Models.Item;
+import ch.supsi.minhhieu.budgetyourtime.Models.Expense;
 import ch.supsi.minhhieu.budgetyourtime.Utils.CalendarUtils;
 import ch.supsi.minhhieu.budgetyourtime.Utils.Period;
 import ch.supsi.minhhieu.budgetyourtime.Utils.PeriodType;
@@ -34,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public String LOG = "";
     private static final String TAG = "DatabaseHelper";
     public final static String DATABASE_NAME = "BudgetYourTime.sqlite";
-    public final static String TABLE_ITEM = "ITEMS";
+    public final static String TABLE_EXPENSE = "EXPENSE";
     public final static String TABLE_BUDGET = "BUDGETS";
     public final static String TABLE_BR = "BUDGETRECORDS";
 
@@ -53,7 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + KEY_RECUR + " TEXT"
             + ")";
 
-    //items
+    //expense
     public final static String KEY_BUDGET = "budget";
     public final static String KEY_DATE = "date";
     public final static String KEY_STARTTIME = "starttime";
@@ -63,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public final static String KEY_DURATION = "duration";
     public final static String KEY_WEATHER = "weather";
     public final static String KEY_LOCALITY = "locality";
-    public final static String CREATE_TABLE_ITEM = "CREATE TABLE " + TABLE_ITEM + "("
+    public final static String CREATE_TABLE_EXPENSE = "CREATE TABLE " + TABLE_EXPENSE + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_DATE + " DATETIME,"
             + KEY_STARTTIME + " DATETIME,"
@@ -120,14 +117,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_BUDGET);
         db.execSQL(CREATE_TABLE_BR);
-        db.execSQL(CREATE_TABLE_ITEM);
+        db.execSQL(CREATE_TABLE_EXPENSE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BUDGET);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BR);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EXPENSE);
         onCreate(db);
     }
 
@@ -320,7 +317,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int deleteBudget(long budgetID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_ITEM, KEY_BUDGET + "=?",
+        db.delete(TABLE_EXPENSE, KEY_BUDGET + "=?",
                 new String[]{String.valueOf(budgetID)});
         db.delete(TABLE_BR, KEY_BUDGET + "=?",
                 new String[]{String.valueOf(budgetID)});
@@ -329,10 +326,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return i;
     }
 
-    public int getConsumptionHistory(long budgetID) {
+    public int getTotalConsumptionHistory(long budgetID) {
         SQLiteDatabase db = this.getReadableDatabase();
         int result = 0;
-        Cursor cursor = db.query(TABLE_ITEM, new String[]{"SUM(" + KEY_DURATION + ")"},
+        Cursor cursor = db.query(TABLE_EXPENSE, new String[]{"SUM(" + KEY_DURATION + ")"},
                 KEY_BUDGET + "=?", new String[]{String.valueOf(budgetID)}, KEY_BUDGET, null, null, null);
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
@@ -341,7 +338,28 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public int getWeekConsumption(long budgetID, int weekDay) {
+    public int getTotalConsumptionThisWeek(long budgetID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        MutableDateTime dt = new MutableDateTime();
+        dt.setDayOfWeek(DateTimeConstants.MONDAY);
+        long weekStart = CalendarUtils.startOfDay(dt).getMillis();
+        dt.addDays(6);
+        long weekEnd = CalendarUtils.endOfDay(dt).getMillis();
+
+        int result = 0;
+        Cursor cursor = db.query(TABLE_EXPENSE, new String[]{"SUM(" + KEY_DURATION + ")"},
+                KEY_BUDGET + "=? and " + KEY_DATE + ">=? and " + KEY_DATE + "<=?",
+                new String[]{String.valueOf(budgetID),String.valueOf(weekStart), String.valueOf(weekEnd)},
+                KEY_BUDGET, null, null, null);
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            result = (int) cursor.getLong(0);
+        }
+        return result;
+    }
+
+    public int getWeekDayConsumption(long budgetID, int weekDay) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         MutableDateTime dt = new MutableDateTime();
@@ -351,7 +369,7 @@ public class DBHelper extends SQLiteOpenHelper {
         long weekEnd = CalendarUtils.endOfDay(dt).getMillis();
         int comsumption = 0;
 
-        Cursor cursor = db.query(TABLE_ITEM, new String[]{KEY_DATE, KEY_DURATION},
+        Cursor cursor = db.query(TABLE_EXPENSE, new String[]{KEY_DATE, KEY_DURATION},
                 KEY_BUDGET + "=? and " + KEY_DATE + ">=? and " + KEY_DATE + "<=?",
                 new String[]{String.valueOf(budgetID), String.valueOf(weekStart), String.valueOf(weekEnd)},
                 null, null, KEY_DATE + " DESC", null);
@@ -373,9 +391,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /***********************************************************************************
-     * ITEMS
+     * EXPENSES
      **********************************************************************************/
-    public boolean addItem(Item i) {
+    public boolean addExpense(Expense i) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues itemValues = new ContentValues();
         itemValues.put(KEY_DATE, i.getDate().getMillis());
@@ -386,7 +404,9 @@ public class DBHelper extends SQLiteOpenHelper {
         itemValues.put(KEY_DURATION, i.getDuration());
         itemValues.put(KEY_BUDGET, i.getBudget());
         itemValues.put(KEY_WEATHER,i.getWeatherID());
-        db.insert(TABLE_ITEM, null, itemValues);
+        itemValues.put(KEY_LOCALITY,i.getLocality());
+
+        db.insert(TABLE_EXPENSE, null, itemValues);
         boolean returnValue = true;
         long budgetID = i.getBudget();
         long date = i.getDate().getMillis();
@@ -417,50 +437,67 @@ public class DBHelper extends SQLiteOpenHelper {
         return returnValue;
     }
 
-    public Item getItem(int id) {
+    public Expense getExpense(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_ITEM, new String[]{KEY_ID, KEY_DATE, KEY_STARTTIME, KEY_ENDTIME,
+        Cursor cursor = db.query(TABLE_EXPENSE, new String[]{KEY_ID, KEY_DATE, KEY_STARTTIME, KEY_ENDTIME,
                         KEY_LOCATION, KEY_IDESCRIPTION, KEY_DURATION, KEY_BUDGET,KEY_WEATHER,KEY_LOCALITY}, KEY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
         MutableDateTime mDate = new MutableDateTime(cursor.getLong(1));
-        Item item = new Item(cursor.getLong(0), mDate, cursor.getLong(2), cursor.getLong(3),
+        Expense expense = new Expense(cursor.getLong(0), mDate, cursor.getLong(2), cursor.getLong(3),
                 cursor.getString(4), cursor.getString(5), cursor.getLong(6), cursor.getLong(7),cursor.getInt(8),cursor.getString(9));
 
-        return item;
+        return expense;
     }
 
-    public List<Item> getItemsByBudget(long budgetID) {
+    public List<Expense> getLatestThreeExpenseRecords(){
         SQLiteDatabase db = this.getReadableDatabase();
-        List<Item> list = new ArrayList<Item>();
-        Cursor cursor = db.query(TABLE_ITEM, new String[]{KEY_ID, KEY_DATE, KEY_STARTTIME, KEY_ENDTIME,
-                        KEY_LOCATION, KEY_IDESCRIPTION, KEY_DURATION, KEY_BUDGET,KEY_WEATHER}, KEY_BUDGET + "=?",
-                new String[]{String.valueOf(budgetID)}, null, null, KEY_DATE + " DESC", null);
+        List<Expense> list = new ArrayList<Expense>();
+        Cursor cursor = db.query(TABLE_EXPENSE, new String[]{KEY_ID, KEY_DATE, KEY_STARTTIME, KEY_ENDTIME,
+                        KEY_LOCATION, KEY_IDESCRIPTION, KEY_DURATION, KEY_BUDGET,KEY_WEATHER,KEY_LOCALITY}, null,
+                null, null, null, KEY_DATE + " DESC", String.valueOf(3));
         if (cursor.moveToFirst()) {
             do {
                 MutableDateTime mDate = new MutableDateTime(cursor.getLong(1));
-                Item item = new Item(cursor.getLong(0), mDate, cursor.getLong(2), cursor.getLong(3),
+                Expense expense = new Expense(cursor.getLong(0), mDate, cursor.getLong(2), cursor.getLong(3),
                         cursor.getString(4), cursor.getString(5), cursor.getLong(6), cursor.getLong(7),cursor.getInt(8),cursor.getString(9));
-                list.add(item);
+                list.add(expense);
             } while (cursor.moveToNext());
         }
         return list;
     }
 
-    public Cursor getTimeRangeforItem(long budgetID, long itemDate) {
+    public List<Expense> getExpensesByBudget(long budgetID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Expense> list = new ArrayList<Expense>();
+        Cursor cursor = db.query(TABLE_EXPENSE, new String[]{KEY_ID, KEY_DATE, KEY_STARTTIME, KEY_ENDTIME,
+                        KEY_LOCATION, KEY_IDESCRIPTION, KEY_DURATION, KEY_BUDGET,KEY_WEATHER,KEY_LOCALITY}, KEY_BUDGET + "=?",
+                new String[]{String.valueOf(budgetID)}, null, null, KEY_DATE + " DESC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                MutableDateTime mDate = new MutableDateTime(cursor.getLong(1));
+                Expense expense = new Expense(cursor.getLong(0), mDate, cursor.getLong(2), cursor.getLong(3),
+                        cursor.getString(4), cursor.getString(5), cursor.getLong(6), cursor.getLong(7),cursor.getInt(8),cursor.getString(9));
+                list.add(expense);
+            } while (cursor.moveToNext());
+        }
+        return list;
+    }
+
+    public Cursor getTimeRangeforExpense(long budgetID, long expenseDate) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_BR,
                 new String[]{KEY_STARTDATE, KEY_ENDATE},
                 KEY_BUDGET + "=?" + " and " + KEY_STARTDATE + "<=?" + " and " + KEY_ENDATE + ">=?",
-                new String[]{String.valueOf(budgetID), String.valueOf(itemDate), String.valueOf(itemDate)}, null, null, null, null);
+                new String[]{String.valueOf(budgetID), String.valueOf(expenseDate), String.valueOf(expenseDate)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
         return cursor;
     }
 
-    public boolean editItem(boolean isBudgetChanged, Item i) {
+    public boolean editExpense(boolean isBudgetChanged, Expense i) {
         ContentValues values = new ContentValues();
         ContentValues brValues = new ContentValues();
         boolean returnValue = true;
@@ -489,7 +526,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 brcursor.moveToFirst();
                 BudgetRecord br = new BudgetRecord(brcursor.getLong(0), brcursor.getLong(1),
                         brcursor.getLong(2), brcursor.getLong(3), brcursor.getLong(4), brcursor.getLong(5),brcursor.getLong(6));
-                Cursor itemCursor = db.query(TABLE_ITEM, new String[]{KEY_DURATION},
+                Cursor itemCursor = db.query(TABLE_EXPENSE, new String[]{KEY_DURATION},
                         KEY_ID + "=?", new String[]{String.valueOf(itemID)}, null, null, null, null);
                 if (itemCursor != null) itemCursor.moveToFirst();
                 br.spent = br.spent + (i.getDuration() - itemCursor.getLong(0));
@@ -497,16 +534,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 brValues.put(KEY_SPENT, br.spent);
                 brValues.put(KEY_BALANCE, br.balance);
-                db.update(TABLE_ITEM, values, KEY_ID + "=?",
+                db.update(TABLE_EXPENSE, values, KEY_ID + "=?",
                         new String[]{String.valueOf(i.getId())});
                 db.update(TABLE_BR, brValues, KEY_ID + "=?",
                         new String[]{String.valueOf(brcursor.getLong(0))});
             }
             db.close();
         } else {
-            Item oldItem = getItem((int)itemID);
-            boolean r1 = deleteItem(oldItem);
-            boolean r2 = addItem(i);
+            Expense oldExpense = getExpense((int)itemID);
+            boolean r1 = deleteExpense(oldExpense);
+            boolean r2 = addExpense(i);
             if(r1 == true && r2 == true) {
                 returnValue = true;
             } else {
@@ -516,8 +553,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return returnValue;
     }
 
-
-    public boolean deleteItem(Item i) {
+    public boolean deleteExpense(Expense i) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues brValues = new ContentValues();
         boolean returnValue = true;
@@ -539,7 +575,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             brValues.put(KEY_SPENT, br.spent);
             brValues.put(KEY_BALANCE, br.balance);
-            db.delete(TABLE_ITEM, KEY_ID + " = ?",
+            db.delete(TABLE_EXPENSE, KEY_ID + " = ?",
                     new String[]{String.valueOf(itemID)});
             db.update(TABLE_BR, brValues, KEY_ID + "=?",
                     new String[]{String.valueOf(brcursor.getLong(0))});
@@ -594,7 +630,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 dayEnd = CalendarUtils.endOfDay(dt).getMillis();
                 break;
         }
-        itemCursor = db.query(true, TABLE_ITEM, new String[]{KEY_LOCATION, "SUM(" + KEY_DURATION + ")"},
+        itemCursor = db.query(true, TABLE_EXPENSE, new String[]{KEY_LOCATION, "SUM(" + KEY_DURATION + ")"},
                 KEY_DATE + ">=? and " + KEY_DATE + "<=?",
                 new String[]{String.valueOf(dayStart), String.valueOf(dayEnd)},
                 KEY_LOCATION, null, "SUM(" + KEY_DURATION + ") DESC", null);
@@ -622,12 +658,12 @@ public class DBHelper extends SQLiteOpenHelper {
         dt.addDays(6);
         long weekEnd = CalendarUtils.endOfDay(dt).getMillis();
 
-        Cursor cursor = db.query(true,TABLE_ITEM, new String[]{KEY_LOCATION}, KEY_DATE + ">=? and " + KEY_DATE + "<=?",
+        Cursor cursor = db.query(true,TABLE_EXPENSE, new String[]{KEY_LOCATION}, KEY_DATE + ">=? and " + KEY_DATE + "<=?",
                 new String[]{String.valueOf(weekStart), String.valueOf(weekEnd)}, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
-                if(!cursor.getString(0).equals("")) {
+                if(cursor.getString(0)!= null && !cursor.getString(0).trim().isEmpty()) {
                     list.add(cursor.getString(0));
                 } else {
                     list.add("Unknown");

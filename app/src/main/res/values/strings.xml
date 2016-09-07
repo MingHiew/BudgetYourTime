@@ -48,7 +48,7 @@
     <string name="no_budget_created">Please create a budget first!</string>
 
 
-    <!-- Item -->
+    <!-- item -->
     <string name="create_item">Item successfully created!</string>
     <string name="save_item">Item successfully saved!</string>
     <string name="delete_item_ok">Item successfully deleted!</string>
@@ -65,6 +65,8 @@
         <item>Monthly Budgets</item>
     </string-array>
 
+    <string name="chart_type">Choose Chart</string>
+    <string name="chart_filter">Chart Filter</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

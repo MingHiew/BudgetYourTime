@@ -47,8 +47,8 @@ public class CalendarUtils {
         MutableDateTime dt = new MutableDateTime();
 
         int rawMinutes = dt.getMinuteOfHour();
-        int modular = rawMinutes % 30;
-        dt.addMinutes(modular < 16 ? -modular : (30 - modular));
+        int modular = rawMinutes % 60;
+        dt.addMinutes(modular < 31 ? -modular : (60 - modular));
 
         return dt.getMillis();
     }

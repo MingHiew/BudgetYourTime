@@ -1,6 +1,5 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -151,9 +149,9 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void createNewItem(){
-        Intent itemIntent = new Intent(HomeActivity.this, AddEditItemActivity.class);
-        itemIntent.putExtra("typeOfDialog",AddEditItemActivity.ADD_NEW_ITEM);
-        startActivityForResult(itemIntent,AddEditItemActivity.ADD_NEW_ITEM);
+        Intent itemIntent = new Intent(HomeActivity.this, AddEditExpenseActivity.class);
+        itemIntent.putExtra("typeOfDialog", AddEditExpenseActivity.ADD_NEW_ITEM);
+        startActivityForResult(itemIntent, AddEditExpenseActivity.ADD_NEW_ITEM);
     }
 
     @Override
@@ -166,13 +164,13 @@ public class HomeActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
                 fragmentTransaction.commit();
                 break;
-            case AddEditItemActivity.ADD_NEW_ITEM:
+            case AddEditExpenseActivity.ADD_NEW_ITEM:
                 OverviewFragment overviewFragment1 = new OverviewFragment();
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container,overviewFragment1);
                 fragmentTransaction.commit();
                 break;
-            case AddEditItemActivity.EDIT_ITEM:
+            case AddEditExpenseActivity.EDIT_ITEM:
                 OverviewFragment overviewFragment2 = new OverviewFragment();
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container,overviewFragment2);

@@ -39,7 +39,7 @@
                 android:value="ch.supsi.minhhieu.budgetyourtime.HomeActivity" />
         </activity>
         <activity
-            android:name=".AddEditItemActivity"
+            android:name=".AddEditExpenseActivity"
             android:label="AddEditItemActivity"
             android:parentActivityName=".HomeActivity"
             android:theme="@android:style/Theme.Holo.Dialog"

@@ -1,9 +1,6 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -11,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,9 +24,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ch.supsi.minhhieu.budgetyourtime.CustomAdapters.BudgetAdapter;
+import ch.supsi.minhhieu.budgetyourtime.CustomAdapters.BudgetOverviewAdapter;
+import ch.supsi.minhhieu.budgetyourtime.CustomAdapters.ExpenseOverviewAdapter;
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
 import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
+import ch.supsi.minhhieu.budgetyourtime.Models.Expense;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -39,13 +37,19 @@ public class OverviewFragment extends Fragment implements BudgetActions{
 
 
     @BindView(R.id.budget_overview_title)
-    TextView overviewTitle;
+    TextView budgetOverviewTitle;
+    @BindView(R.id.expense_overview_title)
+    TextView expenseOverviewTitle;
     @BindView(R.id.budget_overview_list)
     @Nullable ListView budgetList;
+    @BindView(R.id.expense_overview_list)
+    @Nullable ListView expenseList;
 
     private DBHelper db;
-    private BudgetAdapter budgetAdapter;
+    private BudgetOverviewAdapter budgetOverviewAdapter;
+    private ExpenseOverviewAdapter expenseOverviewAdapter;
     FloatingActionButton fab;
+
 
     private Budget budget = new Budget();
     public static OverviewFragment newInstance() {
@@ -75,10 +79,10 @@ public class OverviewFragment extends Fragment implements BudgetActions{
         ButterKnife.bind(this,view);
         final List<Budget> list = db.getAllBudgets();
         if(list.size()!=0){
-            overviewTitle.setText("Your Budget Overview");
+            budgetOverviewTitle.setText("Your Budget Overview");
         }
-        budgetAdapter = new BudgetAdapter(getActivity(),list,db);
-        budgetList.setAdapter(budgetAdapter);
+        budgetOverviewAdapter = new BudgetOverviewAdapter(getActivity(),list,db);
+        budgetList.setAdapter(budgetOverviewAdapter);
         budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -107,6 +111,14 @@ public class OverviewFragment extends Fragment implements BudgetActions{
                 return false;
             }
         });
+
+        final List<Expense> expenseOverviewList = db.getLatestThreeExpenseRecords();
+        if(expenseOverviewList.size()!=0){
+            expenseOverviewTitle.setText("Recent Expenses");
+        }
+        expenseOverviewAdapter = new ExpenseOverviewAdapter(getActivity(),expenseOverviewList,db);
+        expenseList.setAdapter(expenseOverviewAdapter);
+
         return view;
 
     }
@@ -117,7 +129,7 @@ public class OverviewFragment extends Fragment implements BudgetActions{
     }
 
     public void openItemListFragment(Bundle args){
-        ItemDetailListFragment newFragment = new ItemDetailListFragment();
+        ExpenseDetailListFragment newFragment = new ExpenseDetailListFragment();
         newFragment.setArguments(args);
         android.support.v4.app.FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container,newFragment);

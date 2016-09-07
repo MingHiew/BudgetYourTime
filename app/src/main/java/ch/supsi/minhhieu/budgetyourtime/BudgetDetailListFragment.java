@@ -4,7 +4,6 @@ package ch.supsi.minhhieu.budgetyourtime;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -105,7 +104,7 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
 
     @Override
     public void openItemListFragment(Bundle args) {
-        ItemDetailListFragment newFragment = new ItemDetailListFragment();
+        ExpenseDetailListFragment newFragment = new ExpenseDetailListFragment();
         newFragment.setArguments(args);
         android.support.v4.app.FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container,newFragment);

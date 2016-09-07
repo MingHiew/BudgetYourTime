@@ -187,7 +187,7 @@ public class BarChartFragment extends Fragment {
             float[] yVal = new float[list.size()];
             for (int f = 0; f < list.size();f++){
                 Budget b = list.get(f);
-                int val = db.getWeekConsumption(b.getId(),i);
+                int val = db.getWeekDayConsumption(b.getId(),i);
                 yVal[f] = (float)val;
             }
             entries.add(new BarEntry(i,yVal));

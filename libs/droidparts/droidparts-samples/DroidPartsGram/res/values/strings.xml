@@ -10,8 +10,8 @@
     <string name="event_format">Event: \'%s\'.</string>
     
     <string-array name="pref_show_detail_names">
-        <item>Filter</item>        
-        <item>Tags</item>        
+        <expense>Filter</expense>
+        <expense>Tags</expense>
     </string-array>
 
 </resources>

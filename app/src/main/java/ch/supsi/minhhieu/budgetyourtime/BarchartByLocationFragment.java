@@ -121,7 +121,6 @@ public class BarchartByLocationFragment extends Fragment {
         yr.setAxisMinValue(0f);
 
         Legend l = barChart.getLegend();
-        l.setTextColor(R.color.black);
         l.setPosition(LegendPosition.ABOVE_CHART_CENTER);
         l.setForm(LegendForm.SQUARE);
         l.setOrientation(LegendOrientation.VERTICAL);
