@@ -49,10 +49,11 @@
 
 
     <!-- item -->
-    <string name="create_item">Item successfully created!</string>
-    <string name="save_item">Item successfully saved!</string>
-    <string name="delete_item_ok">Item successfully deleted!</string>
-    <string name="delete_item_failed">Deleting item failed!</string>
+    <string name="create_item">Expense successfully created!</string>
+    <string name="save_item">Expense successfully saved!</string>
+    <string name="delete_expense">Delete expense(s)</string>
+    <string name="delete_item_ok">Expense successfully deleted!</string>
+    <string name="delete_item_failed">Deleting expense failed!</string>
     <string name="invalid_date">Invalid date specified. please try again!</string>
     <string name="invalid_time">Please specify valid time range!</string>
 

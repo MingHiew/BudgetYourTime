@@ -55,7 +55,7 @@ public class BarchartByLocationFragment extends Fragment {
     private Typeface mTfXBItalic;
     private DBHelper db;
     private String[] chartType = new String[]{"Piechart: Consumption by Budget",
-                                "Barchart: Week Overview","Barchart: Week Overview by Location"};
+                                "Barchart: Weekday Overview","Barchart: Weekday Overview by Location"};
 
     public BarchartByLocationFragment() {
         // Required empty public constructor
@@ -83,7 +83,7 @@ public class BarchartByLocationFragment extends Fragment {
         mTfRegular = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
         mTfXBItalic = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-ExtraBoldItalic.ttf");
 
-        actionBar.setTitle("Chart: Week Overview by Location");
+        actionBar.setTitle("Chart: Weekday Overview by Location");
 
         barChart.setDescription("");
         barChart.setMaxVisibleValueCount(40);

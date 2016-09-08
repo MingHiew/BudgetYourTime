@@ -1,5 +1,6 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,7 +32,6 @@ public class HomeActivity extends AppCompatActivity
     private static final String TAG = "HomeActivity";
     DBHelper db;
     Toolbar toolbar = null;
-    public static final int OVERVIEW_FRAGMENT = 1;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -48,6 +48,16 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         db = DBHelper.getInstance(this);
         ButterKnife.bind(this);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         fab_new_activity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,15 +69,8 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        if(savedInstanceState == null){
+        /*if (savedInstanceState == null) {*/
+        if(getFragmentManager().findFragmentById(R.id.fragment_container) == null){
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, OverviewFragment.newInstance())
                     .commit();
@@ -109,8 +112,10 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        this.toolbar
-                .setTitle(R.string.title_fragment_overview);
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if(f instanceof OverviewFragment) {
+            this.toolbar.setTitle(R.string.title_fragment_overview);
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -118,24 +123,26 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == R.id.nav_overview) {
-            OverviewFragment overviewFragment = new OverviewFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
-            fragmentTransaction.commit();
-            fab_new_activity.show();
-        } else if (id == R.id.nav_budget_details) {
-            BudgetDetailPagerFragment budgetDetailFragment = new BudgetDetailPagerFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container,budgetDetailFragment);
-            fragmentTransaction.commit();
-            fab_new_activity.hide();
-        } else if (id == R.id.nav_stats) {
-            PieChartFragment piechartFragment = new PieChartFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container,piechartFragment);
-            fragmentTransaction.commit();
-            fab_new_activity.hide();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        switch (id){
+            case R.id.nav_overview:
+                OverviewFragment overviewFragment = new OverviewFragment();
+                fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
+                fragmentTransaction.commit();
+                fab_new_activity.show();
+                break;
+            case R.id.nav_budget_details:
+                BudgetDetailPagerFragment budgetDetailFragment = new BudgetDetailPagerFragment();
+                fragmentTransaction.replace(R.id.fragment_container,budgetDetailFragment);
+                fragmentTransaction.commit();
+                fab_new_activity.hide();
+                break;
+            case R.id.nav_stats:
+                PieChartFragment piechartFragment = new PieChartFragment();
+                fragmentTransaction.replace(R.id.fragment_container,piechartFragment);
+                fragmentTransaction.commit();
+                fab_new_activity.hide();
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -149,9 +156,9 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void createNewItem(){
-        Intent itemIntent = new Intent(HomeActivity.this, AddEditExpenseActivity.class);
-        itemIntent.putExtra("typeOfDialog", AddEditExpenseActivity.ADD_NEW_ITEM);
-        startActivityForResult(itemIntent, AddEditExpenseActivity.ADD_NEW_ITEM);
+        Intent itemIntent = new Intent(HomeActivity.this, AddExpenseActivity.class);
+        itemIntent.putExtra("typeOfDialog", AddExpenseActivity.ADD_NEW_EXPENSE);
+        startActivityForResult(itemIntent, AddExpenseActivity.ADD_NEW_EXPENSE);
     }
 
     @Override
@@ -164,16 +171,10 @@ public class HomeActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.fragment_container,overviewFragment);
                 fragmentTransaction.commit();
                 break;
-            case AddEditExpenseActivity.ADD_NEW_ITEM:
+            case AddExpenseActivity.ADD_NEW_EXPENSE:
                 OverviewFragment overviewFragment1 = new OverviewFragment();
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container,overviewFragment1);
-                fragmentTransaction.commit();
-                break;
-            case AddEditExpenseActivity.EDIT_ITEM:
-                OverviewFragment overviewFragment2 = new OverviewFragment();
-                fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container,overviewFragment2);
                 fragmentTransaction.commit();
                 break;
         }

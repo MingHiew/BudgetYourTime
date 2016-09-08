@@ -42,7 +42,7 @@ public class BudgetDetailPagerFragment extends Fragment {
     ViewPager pager;
 
     private DBHelper db;
-    private boolean isWeekly;
+    private boolean isWeekly = true;
     List<Period> prdList;
     private Toolbar toolbar=null;
     private String[] budget_type={"Weekly","Monthly"};
@@ -73,7 +73,7 @@ public class BudgetDetailPagerFragment extends Fragment {
 
 
         actionBar.setTitle("Budget Detail View");
-        if(isWeekly){
+        if(isWeekly == true){
             prdList = db.getHistoricalWeeklyIntervals();
         } else {
             prdList = db.getHistoricalMonthlyIntervals();

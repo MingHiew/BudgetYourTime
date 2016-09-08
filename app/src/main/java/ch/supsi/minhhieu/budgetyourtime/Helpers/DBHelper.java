@@ -172,6 +172,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return budget;
     }
 
+    public String getBudgetName(long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_BUDGET, new String[]{KEY_NAME}, KEY_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        return cursor.getString(0);
+    }
+
     public List<Budget> getAllBudgets() {
         List<Budget> list = new ArrayList<Budget>();
 
