@@ -6,14 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ch.supsi.minhhieu.budgetyourtime.CustomAdapters.BudgetDetailAdapter;
+import ch.supsi.minhhieu.budgetyourtime.CustomAdapters.BudgetOverviewAdapter;
 import ch.supsi.minhhieu.budgetyourtime.Helpers.DBHelper;
 import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
 
@@ -36,7 +37,8 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
     @BindView(R.id.budget_detail_enddate)
     TextView budgetDetailEndDate;
     @BindView(R.id.budget_detail_list)
-    @Nullable ListView budgetDetailList;
+    @Nullable
+    RecyclerView budgetDetailList;
 
     private long startDate;
     private long endDate;
@@ -68,9 +70,36 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
         budgetDetailStartDate.setText(DateUtils.formatDateTime(getContext(), startDate, DateUtils.FORMAT_SHOW_DATE));
         budgetDetailEndDate.setText(DateUtils.formatDateTime(getContext(), endDate, DateUtils.FORMAT_SHOW_DATE));
         final List<Budget> list = db.getBudgetListByPeriod(startDate,endDate);
-        budgetDetailAdapter = new BudgetDetailAdapter(getActivity(),list,db, startDate, endDate);
-        budgetDetailList.setAdapter(budgetDetailAdapter);
-        budgetDetailList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        budgetDetailList.setLayoutManager(mLayoutManager);
+
+        budgetDetailList.setAdapter(new BudgetDetailAdapter(getActivity(),list,db, startDate, endDate,
+                new BudgetDetailAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Budget b) {
+                        Bundle bundle = new Bundle();
+                        //budget = list.get(position);
+                        bundle.putString("budgetName",b.name);
+                        bundle.putLong("budgetID",b.getId());
+                        openItemListFragment(bundle);
+                    }
+                },
+                new BudgetDetailAdapter.OnItemLongClickListener(){
+                    @Override
+                    public void onItemLongClick(final Budget b) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        String[] budgetEdit = {"Change name","Change amount", "Delete budget"};
+                        builder.setTitle("Budget Edit Options:");
+                        builder.setItems(budgetEdit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        updateBudget(which, b.getId());
+                    }
+                });
+                builder.show();
+            }
+        }));
+        /**budgetDetailList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
@@ -97,7 +126,7 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
                 builder.show();
                 return false;
             }
-        });
+        });**/
         return view;
     }
 

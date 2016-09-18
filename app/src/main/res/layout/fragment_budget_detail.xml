@@ -3,5 +3,6 @@
     android:id="@+id/budget_detail_viewpager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ch.supsi.minhhieu.budgetyourtime.BudgetDetailFragment">
+    android:layoutDirection="ltr"
+    tools:context="ch.supsi.minhhieu.budgetyourtime.BudgetDetailPagerFragment">
 </android.support.v4.view.ViewPager>

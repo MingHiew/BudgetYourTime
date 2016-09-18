@@ -124,9 +124,9 @@ public class BarchartByLocationFragment extends Fragment {
         l.setPosition(LegendPosition.ABOVE_CHART_CENTER);
         l.setForm(LegendForm.SQUARE);
         l.setOrientation(LegendOrientation.VERTICAL);
-        l.setFormSize(10f);
-        l.setTextSize(12f);
-        l.setXEntrySpace(7f);
+        l.setFormSize(7f);
+        l.setTextSize(8f);
+        l.setXEntrySpace(4f);
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
 
@@ -144,7 +144,7 @@ public class BarchartByLocationFragment extends Fragment {
                 float[] yVal = new float[locationList.size()];
                 for (int f = 0; f < locationList.size(); f++) {
                     int val = db.getTimeSpentByLocation(locationList.get(f), i);
-                    yVal[f] = (float) val;
+                    if(val > 0) yVal[f] = (float) val;
                 }
                 entries.add(new BarEntry(i, yVal));
             }

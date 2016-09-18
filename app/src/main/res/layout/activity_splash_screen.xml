@@ -11,10 +11,10 @@
         android:layout_height="150dp"
         android:id="@+id/imageView"
         android:src="@drawable/logo"
-        android:layout_marginTop="250dp"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
-    <ch.supsi.minhhieu.budgetyourtime.Helpers.CustomAppNameTextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -23,6 +23,5 @@
         android:textColor="@color/white"
         android:id="@+id/splashscreen_appname"
         android:layout_below="@+id/imageView"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

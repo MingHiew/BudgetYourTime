@@ -17,9 +17,16 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        releaseUnsigned.initWith(buildTypes.release)
+        releaseUnsigned {
+            signingConfig null
+        }
+
     }
+
 
     splits {
         abi {
@@ -49,8 +56,10 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.android.gms:play-services:9.2.1'
     compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.jakewharton:butterknife:8.2.1'
     compile 'com.daasuu:animateHorizontalProgressBar:0.2.4'
     compile 'joda-time:joda-time:2.9.4'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
+    compile 'com.bignerdranch.android:recyclerview-multiselect:0.2'
 }

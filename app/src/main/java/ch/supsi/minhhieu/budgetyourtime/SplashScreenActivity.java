@@ -12,16 +12,19 @@ import butterknife.ButterKnife;
 
 public class SplashScreenActivity extends Activity {
 
+    @BindView(R.id.splashscreen_appname)
+    TextView appName;
 
     private static int SPLASH_TIME_OUT = 1500;
+    private Typeface mTKaushanScript;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
-
-
+        mTKaushanScript = Typeface.createFromAsset(getAssets(), "KaushanScript-Regular.ttf");
+        appName.setTypeface(mTKaushanScript);
         new Handler().postDelayed(new Runnable() {
 
             @Override

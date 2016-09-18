@@ -17,11 +17,11 @@ public class CalendarUtils {
         return timeMillis == NO_TIME_MILLIS;
     }
 
-
     public static String toDayString(Context context, long timeMillis) {
         return DateUtils.formatDateTime(context, timeMillis,
                 DateUtils.FORMAT_SHOW_WEEKDAY |
                         DateUtils.FORMAT_SHOW_DATE |
+                        DateUtils.FORMAT_ABBREV_MONTH |
                         DateUtils.FORMAT_SHOW_YEAR);
     }
 
@@ -53,6 +53,15 @@ public class CalendarUtils {
         return dt.getMillis();
     }
 
+    public static MutableDateTime today() {
+        MutableDateTime dt = MutableDateTime.now();
+        dt.setHourOfDay(0);
+        dt.setMinuteOfHour(0);
+        dt.setSecondOfMinute(0);
+        dt.setMillisOfSecond(0);
+        return dt;
+    }
+
     public static MutableDateTime startOfDay(MutableDateTime dt) {
         dt.setHourOfDay(0);
         dt.setMinuteOfHour(0);
@@ -69,6 +78,7 @@ public class CalendarUtils {
 
         return dt;
     }
+
     public static DateFormat getShortDateFormat(Context context) {
         return android.text.format.DateFormat.getDateFormat(context);
     }

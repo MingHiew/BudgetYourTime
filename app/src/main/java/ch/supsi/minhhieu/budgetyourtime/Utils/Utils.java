@@ -1,5 +1,10 @@
 package ch.supsi.minhhieu.budgetyourtime.Utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
 import java.util.HashMap;
 
 import ch.supsi.minhhieu.budgetyourtime.R;
@@ -44,6 +49,8 @@ public class Utils {
         String[] a = place.split(", ");
         return a[a.length-2];
     }
+
+
 
     public static int getArtResourceForWeatherCondition(int weatherId) {
         // Based on weather code data found at:

@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/item_exp_title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_weight="4"
             android:layout_height="wrap_content"
             android:textSize="25sp"
@@ -27,7 +27,7 @@
 
         <ImageView
             android:id="@+id/save_item"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:src="@drawable/ic_done_white_48dp"

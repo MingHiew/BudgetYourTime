@@ -10,6 +10,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,6 +132,26 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    private void copyFile(FileInputStream fromFile, FileOutputStream toFile) throws IOException {
+        FileChannel fromChannel = null;
+        FileChannel toChannel = null;
+        try {
+            fromChannel = fromFile.getChannel();
+            toChannel = toFile.getChannel();
+            fromChannel.transferTo(0, fromChannel.size(), toChannel);
+        } finally {
+            try {
+                if (fromChannel != null) {
+                    fromChannel.close();
+                }
+            } finally {
+                if (toChannel != null) {
+                    toChannel.close();
+                }
+            }
+        }
+    }
+
     /***********************************************************************************
      * BUDGETS
      **********************************************************************************/
@@ -170,15 +194,6 @@ public class DBHelper extends SQLiteOpenHelper {
         Budget budget = new Budget(cursor.getLong(0), cursor.getString(1), cursor.getInt(2), cursor.getString(3));
 
         return budget;
-    }
-
-    public String getBudgetName(long id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_BUDGET, new String[]{KEY_NAME}, KEY_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        return cursor.getString(0);
     }
 
     public List<Budget> getAllBudgets() {
@@ -559,7 +574,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 returnValue = false;
             }
         }
-            return returnValue;
+        return returnValue;
     }
 
     public boolean deleteExpense(Expense i) {
@@ -674,8 +689,6 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 if(cursor.getString(0)!= null && !cursor.getString(0).trim().isEmpty()) {
                     list.add(cursor.getString(0));
-                } else {
-                    list.add("Unknown");
                 }
             }
             while (cursor.moveToNext());

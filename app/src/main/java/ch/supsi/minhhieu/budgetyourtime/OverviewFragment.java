@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,14 +42,17 @@ public class OverviewFragment extends Fragment implements BudgetActions{
     @BindView(R.id.expense_overview_title)
     TextView expenseOverviewTitle;
     @BindView(R.id.budget_overview_list)
-    @Nullable ListView budgetList;
+    @Nullable
+    RecyclerView budgetList;
     @BindView(R.id.expense_overview_list)
-    @Nullable ListView expenseList;
+    @Nullable
+    RecyclerView expenseList;
 
     private DBHelper db;
-    private BudgetOverviewAdapter budgetOverviewAdapter;
+    //private BudgetOverviewAdapter budgetOverviewAdapter;
     private ExpenseOverviewAdapter expenseOverviewAdapter;
     FloatingActionButton fab;
+    private static int FAB_HIDE_TIMEOUT = 1000;
 
 
     private Budget budget = new Budget();
@@ -81,9 +85,9 @@ public class OverviewFragment extends Fragment implements BudgetActions{
         if(list.size()!=0){
             budgetOverviewTitle.setText("Your Budget Overview");
         }
-        budgetOverviewAdapter = new BudgetOverviewAdapter(getActivity(),list,db);
-        budgetList.setAdapter(budgetOverviewAdapter);
-        budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /**budgetOverviewAdapter = new BudgetOverviewAdapter(getActivity(),list,db, listener);
+            budgetList.setAdapter(budgetOverviewAdapter);
+            budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
@@ -92,9 +96,41 @@ public class OverviewFragment extends Fragment implements BudgetActions{
                 bundle.putLong("budgetID",budget.getId());
                 openItemListFragment(bundle);
             }
-        });
+        });**/
 
-        budgetList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager mLayoutManager2 = new LinearLayoutManager(getActivity());
+        budgetList.setLayoutManager(mLayoutManager1);
+        expenseList.setLayoutManager(mLayoutManager2);
+        budgetList.setAdapter(new BudgetOverviewAdapter(getActivity(), list, db,
+                new BudgetOverviewAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Budget b) {
+                                Bundle bundle = new Bundle();
+                                //budget = list.get(position);
+                                bundle.putString("budgetName",b.name);
+                                bundle.putLong("budgetID",b.getId());
+                                openItemListFragment(bundle);
+                        }
+            },
+                new BudgetOverviewAdapter.OnItemLongClickListener(){
+
+                    @Override
+                    public void onItemLongClick(final Budget b) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        String[] budgetEdit = {"Change name","Change amount", "Delete budget"};
+                        builder.setTitle("Budget Edit Options:");
+                        builder.setItems(budgetEdit, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                updateBudget(which, b.getId());
+                            }
+                        });
+                        builder.show();
+                    }
+                }
+        ));
+        /**budgetList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 budget = list.get(position);
@@ -110,7 +146,7 @@ public class OverviewFragment extends Fragment implements BudgetActions{
                 builder.show();
                 return false;
             }
-        });
+        });**/
 
         final List<Expense> expenseOverviewList = db.getLatestThreeExpenseRecords();
         if(expenseOverviewList.size()!=0){
@@ -118,7 +154,6 @@ public class OverviewFragment extends Fragment implements BudgetActions{
         }
         expenseOverviewAdapter = new ExpenseOverviewAdapter(getActivity(),expenseOverviewList,db);
         expenseList.setAdapter(expenseOverviewAdapter);
-
         return view;
 
     }
