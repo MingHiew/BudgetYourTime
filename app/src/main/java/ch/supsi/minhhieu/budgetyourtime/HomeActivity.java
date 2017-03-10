@@ -1,5 +1,6 @@
 package ch.supsi.minhhieu.budgetyourtime;
 
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -55,6 +56,8 @@ public class HomeActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        PreferenceManager.setDefaultValues(this,R.xml.preferences,false);
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -100,12 +103,14 @@ public class HomeActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_budget) {
             createNewBudget();
         }
-
+        if (id == R.id.action_settings){
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -142,7 +147,6 @@ public class HomeActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.fragment_container,piechartFragment);
                 fragmentTransaction.commit();
                 fab_new_activity.hide();
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

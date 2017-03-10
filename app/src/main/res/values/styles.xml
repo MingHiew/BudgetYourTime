@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -18,24 +19,31 @@
         <item name="colorButtonNormal">@color/colorPrimaryDarker</item>
         <item name="android:colorButtonNormal">@color/colorPrimaryDarker</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/white</item>
         <item name="android:textColorPrimary">@color/iron</item>
         <item name="android:background">@color/colorPrimary</item>
     </style>
-    <style name="Money.Base.TextView.Widget.EditText" parent="android:Widget.Holo.EditText"/>
+
+    <style name="Money.Base.TextView.Widget.EditText" parent="android:Widget.Holo.EditText" />
+
     <style name="Money.TextView.Widget.EditText" parent="Money.Base.TextView.Widget.EditText">
         <item name="android:ellipsize">end</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:singleLine">true</item>
     </style>
+
     <style name="ProgressBarBudget" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:layout_height">@dimen/space_large</item>
     </style>

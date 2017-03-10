@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">BudgetYourTime</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_setting">Settings</string>
     <string name="title_activity_add_budget">AddBudgetActivity</string>
     <string name="title_activity_add_edit_item">AddEditItemActivity</string>
     <string name="budget_types">Budget Types</string>
@@ -70,4 +71,14 @@
     <string name="chart_filter">Chart Filter</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_location_autodetect_label">Auto-detect location</string>
+    <string name="pref_enable_location_gps_true">Enabled</string>
+    <string name="pref_enable_location_gps_false">Not Enabled</string>
+    <string name="pref_enable_location_gps_default" translatable="false">true</string>
+
+
 </resources>

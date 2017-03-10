@@ -38,12 +38,12 @@ public class BudgetDetailAdapter extends RecyclerView.Adapter<BudgetDetailAdapte
     private DBHelper db;
     private long startDate, endDate;
     private final OnItemClickListener OnClickListener;
-    private final OnItemLongClickListener OnLongClickListener;
+    //private final OnItemLongClickListener OnLongClickListener;
     private final StringBuilder sb = new StringBuilder();
 
 
     public BudgetDetailAdapter(Context context, List<Budget> list, DBHelper db, long startDate, long endDate,
-                               OnItemClickListener onClickListener, OnItemLongClickListener onLongClickListener) {
+                               OnItemClickListener onClickListener) {
         this.context = context;
         this.list = list;
         //inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,7 +51,7 @@ public class BudgetDetailAdapter extends RecyclerView.Adapter<BudgetDetailAdapte
         this.startDate = startDate;
         this.endDate = endDate;
         this.OnClickListener = onClickListener;
-        this.OnLongClickListener = onLongClickListener;
+        //this.OnLongClickListener = onLongClickListener;
     }
 
     /**@Override
@@ -96,15 +96,15 @@ public class BudgetDetailAdapter extends RecyclerView.Adapter<BudgetDetailAdapte
         } else {
             viewHolder.budgetConsumed.setText("Spent: "+String.valueOf(br.spent)+ " hours");
         }
-        if (br.balance == 1){
+        if (br.balance == 1 || br.balance == 0){
             viewHolder.budgetRemained.setText("Remaining Balance: "+String.valueOf(br.balance)+" hour");
         } else {
             viewHolder.budgetRemained.setText("Remaining Balance: "+String.valueOf(br.balance)+" hours");
         }
 
-        viewHolder.budgetStatusBar.setMax(b.amount);
+        viewHolder.budgetStatusBar.setMax((int)br.amount);
         viewHolder.budgetStatusBar.setProgress((int)br.spent);
-        viewHolder.bind(list.get(position), OnClickListener, OnLongClickListener);
+        viewHolder.bind(list.get(position), OnClickListener);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class BudgetDetailAdapter extends RecyclerView.Adapter<BudgetDetailAdapte
         /**public OverviewViewHolder(View view) {
             ButterKnife.bind(this,view);
         }**/
-        public void bind(final Budget b, final OnItemClickListener listener1,final OnItemLongClickListener listener2) {
+        public void bind(final Budget b, final OnItemClickListener listener1) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener1.onItemClick(b);
@@ -200,7 +200,7 @@ public class BudgetDetailAdapter extends RecyclerView.Adapter<BudgetDetailAdapte
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener2.onItemLongClick(b);
+       //             listener2.onItemLongClick(b);
                     return true;
                 }
             });
@@ -210,7 +210,7 @@ public class BudgetDetailAdapter extends RecyclerView.Adapter<BudgetDetailAdapte
         void onItemClick(Budget budget);
     }
 
-    public interface OnItemLongClickListener {
+    /*public interface OnItemLongClickListener {
         void onItemLongClick(Budget budget);
-    }
+    }*/
 }

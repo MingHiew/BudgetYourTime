@@ -30,7 +30,7 @@ import ch.supsi.minhhieu.budgetyourtime.Models.Budget;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BudgetDetailListFragment extends Fragment implements BudgetActions {
+public class BudgetDetailListFragment extends Fragment{
 
     @BindView(R.id.budget_detail_startdate)
     TextView budgetDetailStartDate;
@@ -43,8 +43,8 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
     private long startDate;
     private long endDate;
     private DBHelper db;
-    private BudgetDetailAdapter budgetDetailAdapter;
-    private Budget budget = new Budget();
+    //private BudgetDetailAdapter budgetDetailAdapter;
+    //private Budget budget = new Budget();
 
     public BudgetDetailListFragment() {
         // Required empty public constructor
@@ -83,8 +83,8 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
                         bundle.putLong("budgetID",b.getId());
                         openItemListFragment(bundle);
                     }
-                },
-                new BudgetDetailAdapter.OnItemLongClickListener(){
+                }
+                /*,new BudgetDetailAdapter.OnItemLongClickListener(){
                     @Override
                     public void onItemLongClick(final Budget b) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -98,7 +98,8 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
                 });
                 builder.show();
             }
-        }));
+        }*/
+        ));
         /**budgetDetailList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -141,7 +142,7 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
         transaction.commit();
     }
 
-    public void updateBudget(final int which,final long budgetID){
+    /*public void updateBudget(final int which,final long budgetID){
         // get prompts.xml view
         if(which != 2) {
            createBudgetUpdateDialog(which,budgetID);
@@ -250,5 +251,5 @@ public class BudgetDetailListFragment extends Fragment implements BudgetActions 
         transaction.replace(R.id.fragment_container,newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
+    }*/
 }

@@ -144,7 +144,7 @@ public class RecurUtils {
             }
             this.startDate = getLong(values, "startDate");
             this.period = RecurPeriod.EXACTLY_TIMES;
-            this.periodParam = 200;
+            this.periodParam = 400;
         }
 
         public Recur(RecurInterval interval) {
@@ -170,7 +170,7 @@ public class RecurUtils {
                     break;
             }
             this.period = RecurPeriod.EXACTLY_TIMES;
-            this.periodParam = 200;
+            this.periodParam = 400;
         }
 
         @Override

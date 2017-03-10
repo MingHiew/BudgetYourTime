@@ -258,16 +258,20 @@ public class DBHelper extends SQLiteOpenHelper {
         MutableDateTime dt = new MutableDateTime();
 
 
-        int r = db.update(TABLE_BUDGET, values, KEY_ID + "=?",
+        db.update(TABLE_BUDGET, values, KEY_ID + "=?",
                 new String[]{String.valueOf(budgetID)});
         Budget b = getBudget(budgetID);
         BudgetRecord br = getLatestInterval(b);
         br.balance = b.amount - br.spent;
-        ContentValues brvalues = new ContentValues();
-        brvalues.put(KEY_BALANCE, br.balance);
-        brvalues.put(KEY_AMOUNT, b.amount);
-        int r1 = db.update(TABLE_BR, brvalues, KEY_ID + "=? and " + KEY_ENDATE + ">=?",
-                new String[]{String.valueOf(br.getId()), String.valueOf(dt.getMillis())});
+        ContentValues brvaluesCurrent = new ContentValues();
+        ContentValues brvaluesFuture = new ContentValues();
+        brvaluesCurrent.put(KEY_BALANCE, br.balance);
+        brvaluesCurrent.put(KEY_AMOUNT, b.amount);
+        brvaluesFuture.put(KEY_AMOUNT, b.amount);
+        int r1 = db.update(TABLE_BR, brvaluesCurrent, KEY_ID + "=?",
+                            new String[]{String.valueOf(br.getId())});
+        db.update(TABLE_BR, brvaluesFuture, KEY_BUDGET+"=? and "+KEY_STARTDATE + ">?",
+                            new String[]{String.valueOf(budgetID),String.valueOf(br.endDate)});
         return r1;
     }
 

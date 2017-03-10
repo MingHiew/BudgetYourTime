@@ -2,8 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ch.supsi.minhhieu.budgetyourtime.MainActivity">
-    <item android:id="@+id/action_add_budget"
+    <item
+        android:id="@+id/action_add_budget"
         android:icon="@drawable/ic_add"
         android:title="@string/title_activity_add_budget"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        />
 </menu>
